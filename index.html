@@ -367,7 +367,8 @@
         .video-container {
             position: relative;
             max-width: 400px;
-            /* margin: 30px auto; REMOVED margin to center in grid */
+            /* margin: 30px auto; ADDED margin to center single video in section */
+            margin: 30px auto; 
             width: 100%; 
             max-width: 300px; /* Set a specific width for grid items */
             border-radius: 20px;
@@ -375,6 +376,13 @@
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
         }
 
+        /* NEW CSS: Enlarge the first video container in the Recent Works section */
+        #recentWorksSection .video-grid > .video-container:first-child {
+            max-width: 350px; /* Slightly bigger width */
+            /* You can also adjust height proportionally if needed, e.g., using padding-bottom hack, 
+            but for responsive video, max-width is the simplest control. */
+        }
+        
         .video-container video {
             width: 100%;
             height: auto;
@@ -563,6 +571,19 @@
         </section>
         
         <section class="section">
+            <h2 class="section-title">Inspo</h2>
+            <div class="video-container">
+                <video id="inspoVideo" autoplay muted loop playsinline onclick="openModal(this)">
+                    <source src="inspo/kaguya1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                
+                <a href="https://www.tiktok.com/@dcomics0/video/7547897732103458062" target="_blank" class="video-tiktok-bottom">
+                    Click here to view on TikTok
+                </a>
+            </div>
+        </section>
+        <section class="section" id="recentWorksSection">
             <h2 class="section-title">Recent Works</h2>
             <div class="video-grid">
                 
@@ -599,7 +620,6 @@
         </section>
 
         <section class="section">
-            <h2 class="section-title">Coding Projects</h2>
             <div class="project-grid">
                 
                 <a href="https://qr-web-9i4q.onrender.com/" target="_blank" class="project-card">
@@ -614,20 +634,6 @@
             </div>
         </section>
         
-        <section class="section">
-            <h2 class="section-title">Inspo</h2>
-            <div class="video-container">
-                <video id="inspoVideo" autoplay muted loop playsinline onclick="openModal(this)">
-                    <source src="inspo/kaguya1.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                
-                <a href="https://www.tiktok.com/@dcomics0/video/7547897732103458062" target="_blank" class="video-tiktok-bottom">
-                    Click here to view on TikTok
-                </a>
-            </div>
-        </section>
-
         <section class="section">
             <h2 class="section-title">Socials</h2>
             <div class="links-grid">
