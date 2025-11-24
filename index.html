@@ -933,7 +933,7 @@
             }, 1500);
         }
 
-        // --- Modal Functions ---
+        // --- Modal Functions (MODIFIED) ---
         
         function openModal(videoElement) {
             fadeOutMusic(); 
@@ -943,7 +943,8 @@
             
             modalVideo.querySelector('source').src = videoElement.querySelector('source').src;
             modalVideo.load(); 
-            modalVideo.currentTime = videoElement.currentTime; 
+            // MODIFIED: Force the modal video to start at 0:00
+            modalVideo.currentTime = 0; 
             modalVideo.muted = false; 
             
             modal.style.display = "flex"; 
@@ -954,7 +955,8 @@
             modalVideo.pause();
             
             if (currentPlayingVideo) {
-                currentPlayingVideo.currentTime = modalVideo.currentTime;
+                // MODIFIED: Removed the line currentPlayingVideo.currentTime = modalVideo.currentTime;
+                // This ensures the background video resumes from its current position, maintaining its loop state.
                 currentPlayingVideo.play();
             }
             
