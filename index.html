@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cyn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* --- GLOBAL & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* --- BACKGROUND STYLES (Initial and Active) --- */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Initial simple gradient for landing page */
+            background: linear-gradient(135deg, #111111 0%, #333333 100%); 
+            background-size: 400% 400%;
+            transition: background 1s ease-out; /* Enable smooth transition of background property */
+            z-index: -1;
+        }
+
+        /* Animated background after 'Enter Site' is clicked */
+        .background.active {
+            background: linear-gradient(135deg, #000000 0%, #1a0000 25%, #330000 50%, #1a0000 75%, #000000 100%);
+            animation: gradientFlow 15s ease infinite;
+        }
+
+        @keyframes gradientFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* NEW: Particle Layer Styles */
+        .particle-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* allows clicks to pass through */
+            z-index: 5; /* below main content, above main background */
+        }
+
+        /* --- LANDING SCREEN STYLES (REST OF CSS REMAINS THE SAME) --- */
+        #landingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.7); /* Overlay to ensure button visibility */
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        #landingScreen.fade-out-landing {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* --- ENTER SITE BUTTON (Updated Font) --- */
+        #enterButton {
+            /* Applied the pixel font here */
+            font-family: 'Press Start 2P', monospace; 
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 20px 40px;
+            border: 2px solid #ff6b6b;
+            border-radius: 50px; /* Oblong shape */
+            font-size: 1rem; /* Reduced font size to fit pixel font style */
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+            width: 300px;
+            max-width: 90vw;
+        }
+        
+        #enterButton:hover {
+            background: rgba(255, 107, 107, 0.2);
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.8);
+            transform: scale(1.03); /* Subtle expansion */
+        }
+        
+        #enterButton .enter-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        #enterButton .triangle-icon {
+            font-size: 1.5rem;
+            position: absolute;
+            right: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            color: #ff6b6b;
+            text-shadow: 0 0 5px #ff6b6b;
+            /* Reset font family for the triangle icon if needed, but keeping it simple here */
+            font-family: inherit;
+        }
+
+        #enterButton:hover .triangle-icon {
+            opacity: 1;
+        }
+
+        /* --- MAIN CONTENT STYLES --- */
+        #mainContent {
+            opacity: 0; /* Initially hidden */
+            visibility: hidden;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        #mainContent.fade-in-content {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Styling for the new Date/Time display */
+        #dateTime {
+            font-family: 'Press Start 2P', monospace; 
+            font-size: 0.75rem;
+            color: #ffffff;
+            margin-bottom: 25px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .subtitle {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 80px;
+            padding-top: 40px;
+        }
+
+        h1 {
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-transform: lowercase;
+            color: #ff6b6b;
+            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #ff8787;
+            border-bottom: 2px solid #ff6b6b;
+            padding-bottom: 15px;
+            text-align: center; 
+        }
+
+        .about-info {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0 10px;
+        }
+
+        .links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.5s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .link-card:hover::before {
+            opacity: 1;
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .link-card.tiktok:hover {
+            border-color: #4a148c;
+            background: rgba(74, 20, 140, 0.3);
+            color: #ba68c8;
+        }
+
+        .link-card.discord:hover {
+            border-color: #5865f2;
+            background: rgba(88, 101, 242, 0.3);
+            color: #7289da;
+        }
+
+        .link-card.twitter:hover {
+            border-color: #1d4ed8;
+            background: rgba(29, 78, 216, 0.3);
+            color: #60a5fa;
+        }
+
+        .link-card.github:hover {
+            border-color: #374151;
+            background: rgba(55, 65, 81, 0.3);
+            color: #9ca3af;
+        }
+
+        .link-card h3 {
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .link-card p {
+            display: none;
+        }
+
+        /* --- VIDEO PLAYER & MODAL STYLES (UNCHANGED) --- */
+        .video-container {
+            position: relative;
+            max-width: 400px;
+            margin: 30px auto;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        #aboutVideo {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .video-link {
+            position: absolute;
+            top: 10px; 
+            right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            opacity: 1; 
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        
+        .video-overlay {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 15px; 
+            border-radius: 20px;
+            font-size: 0.8rem; 
+            font-weight: 500;
+        }
+
+        .video-tiktok-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7); 
+            padding: 10px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: white;
+            text-decoration: none;
+            z-index: 10;
+            transition: background 0.3s ease;
+        }
+
+        .video-tiktok-bottom:hover {
+            background: rgba(255, 107, 107, 0.9); 
+        }
+        
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 100; 
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9); 
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            margin: auto;
+            display: block;
+        }
+        
+        #modalVideo {
+            width: 100%;
+            height: auto;
+            max-height: 90vh; 
+            display: block;
+            border-radius: 10px;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #ff6b6b;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        /* --- END VIDEO & MODAL STYLES --- */
+
+        /* NEW: Volume Control Container (UNCHANGED) */
+        #volumeControl {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 25px; /* Width of the draggable area */
+            height: 100px; /* Total height of the volume track */
+            display: flex;
+            flex-direction: column-reverse; /* Bars grow upwards */
+            justify-content: space-around;
+            align-items: center;
+            padding: 5px 0;
+            cursor: ns-resize; /* North-South resize cursor */
+            z-index: 10; 
+            user-select: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s;
+        }
+
+        #volumeControl:hover, #volumeControl.active {
+             background: rgba(255, 255, 255, 0.2);
+             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Individual Volume Bar */
+        .volume-bar {
+            width: 60%;
+            height: 5px; 
+            background-color: white;
+            border-radius: 1px;
+            transition: background-color 0.1s, opacity 0.1s, box-shadow 0.1s;
+            box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+        }
+        .volume-bar.active {
+            background-color: #ff6b6b;
+            box-shadow: 0 0 5px #ff6b6b;
+        }
+
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+                letter-spacing: 4px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            #enterButton {
+                font-size: 0.7rem; /* smaller pixel font on mobile */
+                padding: 15px 30px;
+            }
+
+            #volumeControl {
+                bottom: 10px;
+                left: 10px;
+                height: 80px; /* smaller on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="landingScreen">
+        <button id="enterButton" onclick="enterSite()">
+            <span class="enter-text">ENTER SITE</span>
+            <span class="triangle-icon">▶</span>
+        </button>
+    </div>
+
+    <audio id="backgroundMusic" loop preload="auto" volume="0">
+        <source src="backgroundmp3/happiness.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="background" id="mainBackground"></div>
+    
+    <div class="particle-layer" id="snowParticles"></div>
+    <div class="particle-layer" id="sakuraParticles"></div>
+    <div id="volumeControl">
+        <div class="volume-bar" data-index="0"></div>
+        <div class="volume-bar" data-index="1"></div>
+        <div class="volume-bar" data-index="2"></div>
+        <div class="volume-bar" data-index="3"></div>
+        <div class="volume-bar" data-index="4"></div>
+        <div class="volume-bar" data-index="5"></div>
+        <div class="volume-bar" data-index="6"></div>
+        <div class="volume-bar" data-index="7"></div>
+        <div class="volume-bar" data-index="8"></div>
+        <div class="volume-bar" data-index="9"></div>
+    </div>
+
+    <div class="container" id="mainContent">
+        <header>
+            <div id="dateTime"></div> 
+            <h1>cyn</h1>
+            <p class="subtitle">made with html, css, and js.</p>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">About Me</h2>
+            <p class="about-info">
+                intp | aspiring premiere pro & ae editor | currently learning python, c++, html, css, and javascript
+            </p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Inspo</h2>
+            <div class="video-container">
+                <video id="aboutVideo" autoplay muted loop playsinline onclick="openModal()">
+                    <source src="inspo/kaguya1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                
+                <a href="https://www.tiktok.com/@dcomics0/video/7547897732103458062" target="_blank" class="video-tiktok-bottom">
+                    Click here to view on TikTok
+                </a>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Socials</h2>
+            <div class="links-grid">
+                <a href="https://www.tiktok.com/@cynhyo" target="_blank" class="link-card tiktok">
+                    <h3>TikTok</h3>
+                    <p>@cynhyo</p>
+                </a>
+                <a href="https://discord.gg/ERmducCwvK" target="_blank" class="link-card discord">
+                    <h3>Discord</h3>
+                    <p>Join Server</p>
+                </a>
+                <a href="https://x.com/cyntsch" target="_blank" class="link-card twitter">
+                    <h3>Twitter</h3>
+                    <p>@cyntsch</p>
+                </a>
+                <a href="https://github.com/laincyn" target="_blank" class="link-card github">
+                    <h3>GitHub</h3>
+                    <p>@laincyn</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">GitHub Projects</h2>
+            <div class="links-grid">
+                <a href="https://tinyurl.com/qrkorp" target="_blank" class="link-card github">
+                    <h3>QR Code Generator</h3>
+                    <p>Generate custom QR codes</p>
+                </a>
+                <a href="https://laincyn.github.io/the_marias/" target="_blank" class="link-card github">
+                    <h3>The Marías Player</h3>
+                    <p>Music player experience</p>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <div id="videoModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <video id="modalVideo" controls loop preload="auto">
+                <source src="inspo/kaguya1.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        const aboutVideo = document.getElementById('aboutVideo');
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
+        const bgMusic = document.getElementById('backgroundMusic');
+        const landingScreen = document.getElementById('landingScreen');
+        const mainContent = document.getElementById('mainContent');
+        const mainBackground = document.getElementById('mainBackground');
+        const dateTimeElement = document.getElementById('dateTime');
+        
+        // Volume constants and elements
+        const maxMusicVolume = 0.65; // UPDATED: maxMusicVolume is now 0.65 (65%)
+        const volumeControl = document.getElementById('volumeControl');
+        const volumeBars = document.querySelectorAll('.volume-bar');
+
+        let fadeIntervalId;
+        let isDragging = false;
+
+        // --- Clock Functions ---
+
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format time: 12hr (h:mm:ss tt)
+            const timeOptions = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
+            // Ensure single digit hours don't have a leading zero and lowercase AM/PM
+            const timeString = now.toLocaleTimeString('en-US', timeOptions)
+                                 .toLowerCase()
+                                 .replace(/ /g, ''); 
+
+            // Format date: MM/DD/YYYY
+            const dateOptions = { month: '2-digit', day: '2-digit', year: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', dateOptions);
+
+            dateTimeElement.textContent = `${timeString} | ${dateString}`;
+        }
+
+        // Initialize and start the clock
+        updateDateTime();
+        setInterval(updateDateTime, 1000); 
+
+
+        // --- Volume Control Logic (UNCHANGED) ---
+
+        function updateVolumeBars(volumeFraction) {
+            // volumeFraction is between 0 and 1
+            const activeBars = Math.round(volumeFraction * volumeBars.length);
+
+            volumeBars.forEach((bar, index) => {
+                if (index < activeBars) {
+                    // Activate color for bars up to the current volume level
+                    bar.classList.add('active');
+                    bar.style.opacity = 1;
+                    // Introduce a subtle "soundwave" effect where lower bars are slightly shorter
+                    const barFraction = (index + 1) / volumeBars.length;
+                    bar.style.width = `${60 * (0.8 + 0.2 * barFraction)}%`; 
+                } else {
+                    // Deactivate color for bars above the current volume level
+                    bar.classList.remove('active');
+                    bar.style.opacity = 0.3;
+                    bar.style.width = '60%';
+                }
+            });
+        }
+
+        function handleDrag(event) {
+            if (!isDragging) return;
+
+            // Use clientY for mouse or touch
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+            const rect = volumeControl.getBoundingClientRect();
+            
+            // Calculate volume based on vertical position (inverted: dragging down decreases volume)
+            let y = clientY - rect.top;
+            let volumeFraction = 1 - (y / rect.height); // 0 at top (max vol), 1 at bottom (min vol)
+            
+            // Clamp between 0 and 1
+            volumeFraction = Math.max(0, Math.min(1, volumeFraction));
+            
+            // Set background music volume
+            bgMusic.volume = volumeFraction * maxMusicVolume;
+
+            // Update visual bars
+            updateVolumeBars(volumeFraction);
+            
+            event.preventDefault(); // Prevent text selection/scrolling during drag
+        }
+
+        function startDrag(event) {
+            isDragging = true;
+            volumeControl.classList.add('active');
+            handleDrag(event); // Update immediately on click/touch
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            volumeControl.classList.remove('active');
+        }
+
+        // Add mouse and touch event listeners
+        volumeControl.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', stopDrag);
+
+        volumeControl.addEventListener('touchstart', (e) => startDrag(e));
+        document.addEventListener('touchmove', handleDrag);
+        document.addEventListener('touchend', stopDrag);
+
+
+        // --- Background Music Fading Functions (UNCHANGED) ---
+
+        function fadeOutMusic() {
+            clearInterval(fadeIntervalId); 
+            const fadeInterval = 50; 
+            const fadeTime = 700; 
+            const steps = fadeTime / fadeInterval;
+            const volumeDecrease = bgMusic.volume / steps;
+            
+            if (bgMusic.volume > 0) {
+                fadeIntervalId = setInterval(() => {
+                    if (bgMusic.volume > volumeDecrease) {
+                        bgMusic.volume -= volumeDecrease;
+                        updateVolumeBars(bgMusic.volume / maxMusicVolume);
+                    } else {
+                        bgMusic.volume = 0;
+                        bgMusic.pause();
+                        updateVolumeBars(0);
+                        clearInterval(fadeIntervalId);
+                    }
+                }, fadeInterval);
+            }
+        }
+
+        function fadeInMusic() {
+            clearInterval(fadeIntervalId); 
+            const fadeInterval = 50; 
+            const fadeTime = 1000; 
+            const steps = fadeTime / fadeInterval;
+            const volumeIncrease = maxMusicVolume / steps;
+            
+            // Resume play before fade in
+            bgMusic.play().catch(e => console.error("Audio play failed on fade in:", e));
+            
+            fadeIntervalId = setInterval(() => {
+                if (bgMusic.volume < maxMusicVolume - volumeIncrease) {
+                    bgMusic.volume += volumeIncrease;
+                    updateVolumeBars(bgMusic.volume / maxMusicVolume);
+                } else {
+                    bgMusic.volume = maxMusicVolume;
+                    updateVolumeBars(1.0);
+                    clearInterval(fadeIntervalId);
+                }
+            }, fadeInterval);
+        }
+
+        // Custom loop logic to reset currentTime to 0 on track end
+        bgMusic.addEventListener('ended', function() {
+            this.currentTime = 0; // Reset to the very beginning (0:00)
+            this.play().catch(e => console.error("Audio replay failed on loop:", e));
+        });
+
+        // --- Core Site Transition Logic ---
+
+        function enterSite() {
+            // 1. Set initial volume and current time
+            bgMusic.volume = 0;
+            // Set music start time to 1 minute and 10 seconds (70 seconds)
+            bgMusic.currentTime = 70; 
+            
+            // Initialize volume bars to max volume, as the site will immediately fade into max
+            updateVolumeBars(1.0); 
+
+            // IMPORTANT: Start playing the music only AFTER the 'Enter Site' button is pressed.
+            bgMusic.play().then(() => {
+                fadeInMusic(); // Fade in music over 1 second
+            }).catch(e => {
+                console.error("Audio play failed on site entry click:", e);
+            });
+
+            // 2. Trigger Visual Transitions
+            landingScreen.classList.add('fade-out-landing');
+            mainBackground.classList.add('active');
+            
+            setTimeout(() => {
+                mainContent.classList.add('fade-in-content');
+                aboutVideo.play().catch(e => console.error("Video autoplay failed:", e));
+            }, 500); 
+            
+            setTimeout(() => {
+                landingScreen.style.display = 'none';
+                landingScreen.remove(); 
+            }, 1500);
+        }
+
+        // --- Modal Functions (UNCHANGED) ---
+
+        function openModal() {
+            fadeOutMusic(); 
+
+            aboutVideo.pause(); 
+            modalVideo.src = aboutVideo.querySelector('source').src;
+            modalVideo.currentTime = aboutVideo.currentTime; 
+            modalVideo.muted = false; 
+            modal.style.display = "flex"; 
+            modalVideo.play();
+        }
+
+        function closeModal() {
+            modalVideo.pause();
+            aboutVideo.currentTime = modalVideo.currentTime;
+            modal.style.display = "none";
+            aboutVideo.play(); 
+
+            fadeInMusic(); 
+        }
+
+        // Close the modal when the user presses the ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape" && modal.style.display === "flex") {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
