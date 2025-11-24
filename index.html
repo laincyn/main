@@ -21,24 +21,22 @@
             position: relative;
         }
         
-        /* --- BACKGROUND STYLES (Initial and Active) --- */
+        /* --- BACKGROUND STYLES --- */
         .background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /* Initial simple gradient for landing page */
             background: linear-gradient(135deg, #111111 0%, #333333 100%); 
             background-size: 400% 400%;
-            transition: background 1s ease-out; /* Enable smooth transition of background property */
+            transition: background 1s ease-out; 
             z-index: -1;
         }
 
-        /* Animated background after 'Enter Site' is clicked */
         .background.active {
             background: linear-gradient(135deg, #000000 0%, #1a0000 25%, #330000 50%, #1a0000 75%, #000000 100%);
-            animation: gradientFlow 15s ease infinite;
+            animation: gradientFlow 15s ease infinite; 
         }
 
         @keyframes gradientFlow {
@@ -52,19 +50,8 @@
                 background-position: 0% 50%;
             }
         }
-
-        /* NEW: Particle Layer Styles */
-        .particle-layer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* allows clicks to pass through */
-            z-index: 5; /* below main content, above main background */
-        }
-
-        /* --- LANDING SCREEN STYLES (REST OF CSS REMAINS THE SAME) --- */
+        
+        /* --- LANDING SCREEN STYLES --- */
         #landingScreen {
             position: fixed;
             top: 0;
@@ -75,7 +62,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.7); /* Overlay to ensure button visibility */
+            background: rgba(0, 0, 0, 0.7); 
             transition: opacity 1s ease-out, visibility 1s ease-out;
         }
 
@@ -84,17 +71,15 @@
             visibility: hidden;
         }
 
-        /* --- ENTER SITE BUTTON (Updated Font) --- */
+        /* --- ENTER SITE BUTTON --- */
         #enterButton {
-            /* Applied the pixel font here */
             font-family: 'Press Start 2P', monospace; 
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
             padding: 20px 40px;
             border: 2px solid #ff6b6b;
-            border-radius: 50px; /* Oblong shape */
-            font-size: 1rem; /* Reduced font size to fit pixel font style */
-            font-weight: 400;
+            border-radius: 50px; 
+            font-size: 1rem; 
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
@@ -110,7 +95,7 @@
         #enterButton:hover {
             background: rgba(255, 107, 107, 0.2);
             box-shadow: 0 0 30px rgba(255, 107, 107, 0.8);
-            transform: scale(1.03); /* Subtle expansion */
+            transform: scale(1.03); 
         }
         
         #enterButton .enter-text {
@@ -126,7 +111,6 @@
             transition: opacity 0.4s ease-in-out;
             color: #ff6b6b;
             text-shadow: 0 0 5px #ff6b6b;
-            /* Reset font family for the triangle icon if needed, but keeping it simple here */
             font-family: inherit;
         }
 
@@ -136,9 +120,11 @@
 
         /* --- MAIN CONTENT STYLES --- */
         #mainContent {
-            opacity: 0; /* Initially hidden */
+            opacity: 0; 
             visibility: hidden;
             transition: opacity 1s ease-out, visibility 1s ease-out;
+            position: relative; 
+            z-index: 10; 
         }
 
         #mainContent.fade-in-content {
@@ -146,6 +132,32 @@
             visibility: visible;
         }
 
+        /* NEW: Fade-In Slide Up Keyframe */
+        @keyframes fadeInSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* NEW: Class for sections that will be animated */
+        .animated-section {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        /* NEW: Apply animation to sections when main content is visible */
+        #mainContent.fade-in-content .animated-section {
+            opacity: 1;
+            transform: translateY(0);
+            /* This animation will be controlled by JS for staggered delay */
+            animation: fadeInSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        
         /* Styling for the new Date/Time display */
         #dateTime {
             font-family: 'Press Start 2P', monospace; 
@@ -154,6 +166,30 @@
             margin-bottom: 25px;
             opacity: 0.7;
             transition: opacity 0.3s;
+        }
+        
+        /* Profile Picture Styles */
+        .profile-pic-container {
+            text-align: center; 
+            margin-bottom: 10px;
+        }
+
+        .profile-pic {
+            width: 180px; 
+            height: 180px;
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 3px solid #ff6b6b; 
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 
+                        0 0 5px rgba(255, 107, 107, 0.3); 
+            transition: transform 0.3s ease, box-shadow 0.5s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05) rotate(-3deg);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 
+                        0 0 20px rgba(255, 107, 107, 0.8),
+                        0 0 40px rgba(255, 107, 107, 0.5);
         }
         
         .subtitle {
@@ -173,7 +209,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 60px; /* Reduced header bottom margin */
             padding-top: 40px;
         }
 
@@ -184,11 +220,27 @@
             text-transform: lowercase;
             color: #ff6b6b;
             text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
-            margin-bottom: 10px;
+            margin-top: 10px; 
+            margin-bottom: 25px; 
         }
 
+        /* REFINEMENT 1: Frosted Glass Effect on Sections */
         .section {
-            margin-bottom: 80px;
+            /* ORIGINAL: 80px | NEW: Reduced spacing between sections */
+            margin-bottom: 30px; 
+            background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px); 
+            border-radius: 15px; 
+            padding: 40px; 
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        /* REFINEMENT 2: Hover effect for sections */
+        .section:hover {
+            box-shadow: 0 10px 60px rgba(255, 107, 107, 0.2); 
+            transform: translateY(-3px); 
         }
 
         .section-title {
@@ -201,6 +253,18 @@
             padding-bottom: 15px;
             text-align: center; 
         }
+        
+        /* Styles for the white section subtitles (edits, coding projects) */
+        .section-subtitle {
+            font-family: 'Press Start 2P', monospace; 
+            font-size: 0.9rem;
+            color: #ffffff; 
+            margin-top: 25px; 
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
 
         .about-info {
             text-align: center;
@@ -212,6 +276,7 @@
             padding: 0 10px;
         }
 
+        /* --- LINKS STYLES --- */
         .links-grid {
             display: flex;
             flex-direction: column;
@@ -222,7 +287,59 @@
             margin-right: auto;
         }
 
-        /* NEW: Project Grid for Coding Projects */
+        .link-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            color: #ffffff;
+            transition: all 0.5s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* REFINEMENT 3: Add subtle shine effect on link hover */
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%; 
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
+            transition: transform 0.5s ease-out;
+            z-index: 1;
+        }
+
+        .link-card:hover::before {
+            transform: translateX(200%); 
+        }
+
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: #ff6b6b; /* Highlight border on hover */
+        }
+        /* Specific Link Hover Colors (enhanced) */
+        .link-card.tiktok:hover { border-color: #4a148c; background: rgba(74, 20, 140, 0.3); color: #ba68c8; }
+        .link-card.discord:hover { border-color: #5865f2; background: rgba(88, 101, 242, 0.3); color: #7289da; }
+        .link-card.twitter:hover { border-color: #1d4ed8; background: rgba(29, 78, 216, 0.3); color: #60a5fa; }
+        .link-card.github:hover { border-color: #374151; background: rgba(55, 65, 81, 0.3); color: #9ca3af; }
+
+        .link-card h3 {
+            font-size: 1.2rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .link-card p {
+            display: none;
+        }
+
+        /* --- PROJECT CUBES STYLES --- */
         .project-grid {
             display: flex;
             justify-content: center;
@@ -252,14 +369,14 @@
             letter-spacing: 1px;
             margin-bottom: 10px;
             text-align: center;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.8);
             font-family: 'Press Start 2P', monospace; 
         }
 
         .project-cube {
             width: 80px;
             height: 80px;
-            background: rgba(255, 107, 107, 0.15); /* Light red semi-transparent cube */
+            background: rgba(255, 107, 107, 0.15); 
             border: 2px solid #ff6b6b;
             box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
             display: flex;
@@ -267,7 +384,7 @@
             align-items: center;
             font-size: 2rem;
             font-family: 'Press Start 2P', monospace;
-            border-radius: 5px; /* Minimal border radius for cube look */
+            border-radius: 5px; 
             transition: all 0.3s ease;
         }
         
@@ -277,85 +394,15 @@
         }
 
         .project-cube.play-button::before {
-            content: '▶'; /* Unicode for right-pointing triangle */
+            content: '▶'; 
             color: #ff6b6b;
             font-size: 2.5rem;
             line-height: 1;
-            /* Adjust position for visual centering */
             transform: translateX(2px);
             display: inline-block;
         }
 
-        .link-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            color: #ffffff;
-            transition: all 0.5s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        .link-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .link-card:hover::before {
-            opacity: 1;
-        }
-
-        .link-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .link-card.tiktok:hover {
-            border-color: #4a148c;
-            background: rgba(74, 20, 140, 0.3);
-            color: #ba68c8;
-        }
-
-        .link-card.discord:hover {
-            border-color: #5865f2;
-            background: rgba(88, 101, 242, 0.3);
-            color: #7289da;
-        }
-
-        .link-card.twitter:hover {
-            border-color: #1d4ed8;
-            background: rgba(29, 78, 216, 0.3);
-            color: #60a5fa;
-        }
-
-        .link-card.github:hover {
-            border-color: #374151;
-            background: rgba(55, 65, 81, 0.3);
-            color: #9ca3af;
-        }
-
-        .link-card h3 {
-            font-size: 1.2rem;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .link-card p {
-            display: none;
-        }
-
-        /* --- VIDEO PLAYER & MODAL STYLES (UPDATED FOR VIDEO GRID) --- */
+        /* --- VIDEO PLAYER & MODAL STYLES --- */
         .video-grid {
             display: flex;
             justify-content: center;
@@ -366,21 +413,21 @@
 
         .video-container {
             position: relative;
-            max-width: 400px;
-            /* margin: 30px auto; ADDED margin to center single video in section */
-            margin: 30px auto; 
+            max-width: 300px; 
+            margin: 15px auto; 
             width: 100%; 
-            max-width: 300px; /* Set a specific width for grid items */
-            border-radius: 20px;
+            border-radius: 10px; 
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
         }
 
-        /* NEW CSS: Enlarge the first video container in the Recent Works section */
+        .video-container:hover {
+            transform: scale(1.02); /* Subtle hover on video containers */
+        }
+
         #recentWorksSection .video-grid > .video-container:first-child {
-            max-width: 350px; /* Slightly bigger width */
-            /* You can also adjust height proportionally if needed, e.g., using padding-bottom hack, 
-            but for responsive video, max-width is the simplest control. */
+            max-width: 350px; 
         }
         
         .video-container video {
@@ -390,14 +437,13 @@
             cursor: pointer;
         }
         
-        /* Removed .video-link and .video-overlay as the bottom bar is used */
-        
+        /* REFINEMENT 4: Enhanced TikTok bottom bar */
         .video-tiktok-bottom {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.7); 
+            background: rgba(0, 0, 0, 0.8); 
             padding: 10px 0;
             text-align: center;
             font-size: 0.9rem;
@@ -408,7 +454,8 @@
         }
 
         .video-tiktok-bottom:hover {
-            background: rgba(255, 107, 107, 0.9); 
+            background: #ff6b6b; /* Solid red on hover */
+            color: #111111;
         }
         
         .modal {
@@ -460,24 +507,24 @@
             text-decoration: none;
             cursor: pointer;
         }
-        /* --- END VIDEO & MODAL STYLES --- */
 
-        /* NEW: Volume Control Container (UNCHANGED) */
+        /* --- VOLUME CONTROL STYLES --- */
         #volumeControl {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            width: 25px; /* Width of the draggable area */
-            height: 100px; /* Total height of the volume track */
+            width: 25px; 
+            height: 100px; 
             display: flex;
-            flex-direction: column-reverse; /* Bars grow upwards */
+            flex-direction: column-reverse; 
             justify-content: space-around;
             align-items: center;
             padding: 5px 0;
-            cursor: ns-resize; /* North-South resize cursor */
+            cursor: ns-resize; 
             z-index: 10; 
             user-select: none;
             background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
             border-radius: 5px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: background 0.3s;
@@ -488,22 +535,28 @@
              box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
         }
 
-        /* Individual Volume Bar */
         .volume-bar {
             width: 60%;
-            height: 5px; 
+            height: 4px; 
             background-color: white;
-            border-radius: 1px;
-            transition: background-color 0.1s, opacity 0.1s, box-shadow 0.1s;
+            border-radius: 2px;
+            transition: background-color 0.1s, opacity 0.1s, box-shadow 0.1s, width 0.3s ease;
             box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
         }
         .volume-bar.active {
             background-color: #ff6b6b;
-            box-shadow: 0 0 5px #ff6b6b;
+            box-shadow: 0 0 5px #ff6b6b, 0 0 10px #ff6b6b; 
         }
 
 
         @media (max-width: 768px) {
+            .container {
+                padding: 40px 10px;
+            }
+            .section {
+                padding: 20px;
+                margin-bottom: 20px; /* Smaller gap on mobile */
+            }
             h1 {
                 font-size: 3rem;
                 letter-spacing: 4px;
@@ -514,14 +567,14 @@
             }
 
             #enterButton {
-                font-size: 0.7rem; /* smaller pixel font on mobile */
+                font-size: 0.7rem; 
                 padding: 15px 30px;
             }
 
             #volumeControl {
                 bottom: 10px;
                 left: 10px;
-                height: 80px; /* smaller on mobile */
+                height: 80px; 
             }
         }
     </style>
@@ -541,8 +594,6 @@
 
     <div class="background" id="mainBackground"></div>
     
-    <div class="particle-layer" id="snowParticles"></div>
-    <div class="particle-layer" id="sakuraParticles"></div>
     <div id="volumeControl">
         <div class="volume-bar" data-index="0"></div>
         <div class="volume-bar" data-index="1"></div>
@@ -559,18 +610,24 @@
     <div class="container" id="mainContent">
         <header>
             <div id="dateTime"></div> 
+            
             <h1>cyn</h1>
+            
+            <div class="profile-pic-container">
+                                <img src="png/joker.jpg" alt="Profile Picture of The Joker" class="profile-pic">
+            </div>
+            
             <p class="subtitle">made with html, css, and js.</p>
         </header>
 
-        <section class="section">
+        <section class="section animated-section">
             <h2 class="section-title">About Me</h2>
             <p class="about-info">
                 intp | aspiring premiere pro & ae editor | currently learning python, c++, html, css, and javascript
             </p>
         </section>
         
-        <section class="section">
+        <section class="section animated-section">
             <h2 class="section-title">Inspo</h2>
             <div class="video-container">
                 <video id="inspoVideo" autoplay muted loop playsinline onclick="openModal(this)">
@@ -583,8 +640,12 @@
                 </a>
             </div>
         </section>
-        <section class="section" id="recentWorksSection">
+        
+        <section class="section animated-section" id="recentWorksSection">
             <h2 class="section-title">Recent Works</h2>
+            
+            <p class="section-subtitle">edits</p>
+            
             <div class="video-grid">
                 
                 <div class="video-container">
@@ -617,9 +678,9 @@
                     </a>
                 </div>
             </div>
-        </section>
-
-        <section class="section">
+            
+            <p class="section-subtitle">coding projects</p>
+            
             <div class="project-grid">
                 
                 <a href="https://qr-web-9i4q.onrender.com/" target="_blank" class="project-card">
@@ -634,7 +695,7 @@
             </div>
         </section>
         
-        <section class="section">
+        <section class="section animated-section">
             <h2 class="section-title">Socials</h2>
             <div class="links-grid">
                 <a href="https://www.tiktok.com/@cynhyo" target="_blank" class="link-card tiktok">
@@ -669,12 +730,11 @@
     </div>
 
     <script>
-        // UPDATED: Using 'inspoVideo' instead of 'aboutVideo'
+        // --- Element Selection ---
         const inspoVideo = document.getElementById('inspoVideo');
         const recentWork1 = document.getElementById('recentWork1');
         const recentWork2 = document.getElementById('recentWork2');
         const recentWork3 = document.getElementById('recentWork3');
-        
         const modal = document.getElementById('videoModal');
         const modalVideo = document.getElementById('modalVideo');
         const bgMusic = document.getElementById('backgroundMusic');
@@ -682,59 +742,46 @@
         const mainContent = document.getElementById('mainContent');
         const mainBackground = document.getElementById('mainBackground');
         const dateTimeElement = document.getElementById('dateTime');
-        
-        // Volume constants and elements
-        const maxMusicVolume = 0.65; // UPDATED: maxMusicVolume is now 0.65 (65%)
         const volumeControl = document.getElementById('volumeControl');
         const volumeBars = document.querySelectorAll('.volume-bar');
-
+        
+        // --- Global Variables ---
+        const maxMusicVolume = 0.65; 
         let fadeIntervalId;
         let isDragging = false;
+        let currentPlayingVideo = null; 
         
-        // NEW: Store the video element that was clicked to restore its state
-        let currentPlayingVideo = null;
-
-
         // --- Clock Functions ---
 
         function updateDateTime() {
             const now = new Date();
-            
-            // Format time: 12hr (h:mm:ss tt)
             const timeOptions = { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true };
-            // Ensure single digit hours don't have a leading zero and lowercase AM/PM
+            const dateOptions = { month: '2-digit', day: '2-digit', year: 'numeric' };
+            
             const timeString = now.toLocaleTimeString('en-US', timeOptions)
                                  .toLowerCase()
                                  .replace(/ /g, ''); 
 
-            // Format date: MM/DD/YYYY
-            const dateOptions = { month: '2-digit', day: '2-digit', year: 'numeric' };
             const dateString = now.toLocaleDateString('en-US', dateOptions);
 
             dateTimeElement.textContent = `${timeString} | ${dateString}`;
         }
 
-        // Initialize and start the clock
         updateDateTime();
         setInterval(updateDateTime, 1000); 
 
-
-        // --- Volume Control Logic (UNCHANGED) ---
+        // --- Volume Control Logic ---
 
         function updateVolumeBars(volumeFraction) {
-            // volumeFraction is between 0 and 1
             const activeBars = Math.round(volumeFraction * volumeBars.length);
 
             volumeBars.forEach((bar, index) => {
                 if (index < activeBars) {
-                    // Activate color for bars up to the current volume level
                     bar.classList.add('active');
                     bar.style.opacity = 1;
-                    // Introduce a subtle "soundwave" effect where lower bars are slightly shorter
                     const barFraction = (index + 1) / volumeBars.length;
                     bar.style.width = `${60 * (0.8 + 0.2 * barFraction)}%`; 
                 } else {
-                    // Deactivate color for bars above the current volume level
                     bar.classList.remove('active');
                     bar.style.opacity = 0.3;
                     bar.style.width = '60%';
@@ -745,31 +792,25 @@
         function handleDrag(event) {
             if (!isDragging) return;
 
-            // Use clientY for mouse or touch
             const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-
             const rect = volumeControl.getBoundingClientRect();
             
-            // Calculate volume based on vertical position (inverted: dragging down decreases volume)
             let y = clientY - rect.top;
-            let volumeFraction = 1 - (y / rect.height); // 0 at top (max vol), 1 at bottom (min vol)
+            let volumeFraction = 1 - (y / rect.height); 
             
-            // Clamp between 0 and 1
             volumeFraction = Math.max(0, Math.min(1, volumeFraction));
             
-            // Set background music volume
             bgMusic.volume = volumeFraction * maxMusicVolume;
 
-            // Update visual bars
             updateVolumeBars(volumeFraction);
             
-            event.preventDefault(); // Prevent text selection/scrolling during drag
+            event.preventDefault(); 
         }
 
         function startDrag(event) {
             isDragging = true;
             volumeControl.classList.add('active');
-            handleDrag(event); // Update immediately on click/touch
+            handleDrag(event); 
         }
 
         function stopDrag() {
@@ -777,17 +818,15 @@
             volumeControl.classList.remove('active');
         }
 
-        // Add mouse and touch event listeners
         volumeControl.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', handleDrag);
         document.addEventListener('mouseup', stopDrag);
-
         volumeControl.addEventListener('touchstart', (e) => startDrag(e));
         document.addEventListener('touchmove', handleDrag);
         document.addEventListener('touchend', stopDrag);
 
 
-        // --- Background Music Fading Functions (UNCHANGED) ---
+        // --- Background Music Fading Functions ---
 
         function fadeOutMusic() {
             clearInterval(fadeIntervalId); 
@@ -818,7 +857,6 @@
             const steps = fadeTime / fadeInterval;
             const volumeIncrease = maxMusicVolume / steps;
             
-            // Resume play before fade in
             bgMusic.play().catch(e => console.error("Audio play failed on fade in:", e));
             
             fadeIntervalId = setInterval(() => {
@@ -833,24 +871,30 @@
             }, fadeInterval);
         }
 
-        // Custom loop logic to reset currentTime to 0 on track end
         bgMusic.addEventListener('ended', function() {
-            this.currentTime = 0; // Reset to the very beginning (0:00)
+            this.currentTime = 0; 
             this.play().catch(e => console.error("Audio replay failed on loop:", e));
         });
 
-        // --- Core Site Transition Logic ---
+        // --- Staggered Entrance Animation Function (NEW) ---
+
+        function staggerEntranceAnimations() {
+            // Select all elements that have the 'animated-section' class
+            const sections = document.querySelectorAll('#mainContent .animated-section');
+            sections.forEach((section, index) => {
+                // Apply a sequential delay to each section
+                section.style.animationDelay = `${0.1 * index}s`; 
+            });
+        }
         
-        // Helper to attempt playing all videos on content fade-in
+        // --- Video Playback Helpers ---
+        
         function tryPlayingAllVideos() {
-            // Put all auto-playing videos into an array
             const videosToPlay = [inspoVideo, recentWork1, recentWork2, recentWork3];
             
             videosToPlay.forEach(video => {
-                if(video) { // Check if the element exists
+                if(video) { 
                     video.play().catch(e => {
-                        // This catch block will run if autoplay is blocked by the browser policy.
-                        // Since all are muted, it should work on most modern browsers.
                         console.error(`Video autoplay failed for ${video.id}:`, e);
                     });
                 }
@@ -858,29 +902,29 @@
         }
 
 
+        // --- Core Site Transition Logic ---
+        
         function enterSite() {
-            // 1. Set initial volume and current time
+            // 1. Audio setup
             bgMusic.volume = 0;
-            // Set music start time to 1 minute and 10 seconds (70 seconds)
             bgMusic.currentTime = 70; 
-            
-            // Initialize volume bars to max volume, as the site will immediately fade into max
             updateVolumeBars(1.0); 
 
-            // IMPORTANT: Start playing the music only AFTER the 'Enter Site' button is pressed.
             bgMusic.play().then(() => {
-                fadeInMusic(); // Fade in music over 1 second
+                fadeInMusic(); 
             }).catch(e => {
                 console.error("Audio play failed on site entry click:", e);
             });
 
-            // 2. Trigger Visual Transitions
+            // 2. Visual Transitions
             landingScreen.classList.add('fade-out-landing');
             mainBackground.classList.add('active');
             
             setTimeout(() => {
                 mainContent.classList.add('fade-in-content');
-                tryPlayingAllVideos(); // Try to play all new videos
+                tryPlayingAllVideos(); 
+                // IMPORTANT: Call the stagger function after adding the fade-in class
+                staggerEntranceAnimations(); 
             }, 500); 
             
             setTimeout(() => {
@@ -889,19 +933,16 @@
             }, 1500);
         }
 
-        // --- Modal Functions (UPDATED FOR MULTIPLE VIDEOS) ---
+        // --- Modal Functions ---
         
-        // Now accepts the video element that was clicked
         function openModal(videoElement) {
             fadeOutMusic(); 
             
-            currentPlayingVideo = videoElement; // Store the clicked video element
-            
+            currentPlayingVideo = videoElement; 
             videoElement.pause(); 
             
-            // Set the modal video source and time based on the clicked video
             modalVideo.querySelector('source').src = videoElement.querySelector('source').src;
-            modalVideo.load(); // Reload the modal video to change the source
+            modalVideo.load(); 
             modalVideo.currentTime = videoElement.currentTime; 
             modalVideo.muted = false; 
             
@@ -912,7 +953,6 @@
         function closeModal() {
             modalVideo.pause();
             
-            // Restore the state of the original video
             if (currentPlayingVideo) {
                 currentPlayingVideo.currentTime = modalVideo.currentTime;
                 currentPlayingVideo.play();
@@ -920,14 +960,12 @@
             
             modal.style.display = "none";
             
-            // Clear the source in the modal video to prevent accidental autoplay/buffering
             modalVideo.querySelector('source').src = "";
             modalVideo.load();
 
             fadeInMusic(); 
         }
 
-        // Close the modal when the user presses the ESC key
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape" && modal.style.display === "flex") {
                 closeModal();
