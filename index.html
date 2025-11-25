@@ -336,11 +336,16 @@
 
         .video-container {
             position: relative;
-            width: 450px; /* MODIFIED: Increased from 300px to 450px (1.5x larger) */
+            width: 300px; /* Base width for consistency */
             border-radius: 10px; 
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
             transition: transform 0.3s ease, box-shadow 0.5s ease;
+        }
+        
+        /* NEW RULE: Inspo Video Size (Ensure it's not affected by carousel styles) */
+        #inspoSection .video-container {
+            width: 450px; 
         }
         
         /* New aspect ratio container for 16:9 (Horizontal) videos */
@@ -469,6 +474,86 @@
             text-shadow: 0 0 5px var(--color-red);
         }
 
+
+        /* ------------------------------------------------------------------- */
+        /* --- EDITS LOG CAROUSEL STYLES --- */
+        /* ------------------------------------------------------------------- */
+
+        .edits-carousel-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: 0 50px; /* Space for the buttons */
+        }
+        
+        .edits-carousel {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation for rotation */
+        }
+        
+        .video-card {
+            min-width: 300px; /* Base size */
+            width: 300px; 
+            box-sizing: border-box;
+            opacity: 0.4;
+            transform: scale(0.7);
+            filter: brightness(0.7);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none; /* Disable click on side videos */
+        }
+
+        .video-card.is-active {
+            opacity: 1;
+            transform: scale(1.5); /* Highlighted size */
+            filter: brightness(1);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8), 0 0 40px var(--color-red);
+            pointer-events: auto; /* Enable click on active video */
+            z-index: 10;
+        }
+        
+        /* Override base video-container styles for carousel cards */
+        .video-card .video-container {
+             width: 100%;
+             box-shadow: none; /* Let the card define the shadow/glow */
+        }
+        
+        .video-card .video-container:hover {
+            transform: none; 
+            box-shadow: none;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--color-red);
+            border-radius: 50%;
+            color: var(--color-red);
+            font-size: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 20;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .carousel-nav:hover {
+            background: var(--color-red);
+            color: var(--color-background);
+            box-shadow: 0 0 15px var(--color-red);
+        }
+
+        #prevEdit { left: 0; }
+        #nextEdit { right: 0; }
 
         /* ------------------------------------------------------------------- */
         /* --- LINKS (SOCIALS) --- */
@@ -718,7 +803,11 @@
                 height: 120px;
             }
             
-            /* ADJUSTED FOR MOBILE: Keep video relatively large */
+            /* Inspo video size for mobile */
+            #inspoSection .video-container {
+                width: 90%; 
+            }
+            
             .video-container {
                 width: 90%; 
             }
@@ -732,6 +821,29 @@
                 bottom: 15px;
                 width: 20px;
                 height: 120px;
+            }
+
+            /* Edits Carousel Mobile Adjustments */
+            .edits-carousel-container {
+                padding: 0 10px;
+            }
+            
+            .video-card {
+                 min-width: 200px;
+                 width: 200px;
+            }
+
+            .carousel-nav {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+
+            #prevEdit { left: 5px; }
+            #nextEdit { right: 5px; }
+
+            .video-card.is-active {
+                transform: scale(1.1);
             }
         }
     </style>
@@ -791,7 +903,22 @@
             </p>
         </section>
         
-        <section class="section animated-section" data-animation-delay="0.1">
+        <section class="section animated-section" id="codingProjectsSection" data-animation-delay="0.1">
+            <h2 class="section-title">Coding Projects</h2>
+            <div class="project-grid">
+                <a href="https://qr-web-9i4q.onrender.com/" target="_blank" class="project-card">
+                    <p class="project-title">QR Code Generator</p>
+                    <div class="project-cube">QR</div>
+                </a>
+                
+                <a href="https://laincyn.github.io/the_marias/" target="_blank" class="project-card">
+                    <p class="project-title">ALBUM Player</p>
+                    <div class="project-cube play-button"></div>
+                </a>
+            </div>
+        </section>
+        
+        <section class="section animated-section" id="inspoSection" data-animation-delay="0.2">
             <h2 class="section-title">Inspo</h2>
             <div class="video-grid">
                 <div class="video-container">
@@ -808,67 +935,66 @@
             </div>
         </section>
         
-        <section class="section animated-section" id="recentWorksSection" data-animation-delay="0.2">
-            <h2 class="section-title">Recent Works</h2>
+        <section class="section animated-section" id="recentWorksSection" data-animation-delay="0.3">
+            <h2 class="section-title">Edits Log</h2>
             
-            <p class="section-subtitle">>> EDITS LOG <<</p>
-            
-            <div class="video-grid">
-                
-                <div class="video-container">
-                    <div class="video-horizontal">
-                        <video id="recentWork1" autoplay muted loop playsinline onclick="openModal(this)">
-                            <source src="recent_works/cyrene.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+            <div class="edits-carousel-container">
+                <div class="edits-carousel" id="editsCarousel">
+                    
+                    <div class="video-card" id="rezedenjiCard" data-index="0">
+                        <div class="video-container">
+                            <div class="video-horizontal">
+                                <video id="recentWork2" autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="recent_works/rezedenji.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <a href="https://www.tiktok.com/@cynhyo/video/7568189301809401106" target="_blank" class="video-tiktok-bottom">
+                                <span>rezedenji.mp4 // TikTok</span>
+                            </a>
+                        </div>
                     </div>
-                    <a href="https://www.tiktok.com/@cynhyo/video/7571472539432586503" target="_blank" class="video-tiktok-bottom">
-                        <span>cyrene.mp4 // TikTok</span>
-                    </a>
-                </div>
+                    
+                    <div class="video-card is-active" id="cyreneCard" data-index="1">
+                        <div class="video-container">
+                            <div class="video-horizontal">
+                                <video id="recentWork1" autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="recent_works/cyrene.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <a href="https://www.tiktok.com/@cynhyo/video/7571472539432586503" target="_blank" class="video-tiktok-bottom">
+                                <span>cyrene.mp4 // TikTok</span>
+                            </a>
+                        </div>
+                    </div>
 
-                <div class="video-container">
-                    <div class="video-horizontal">
-                        <video id="recentWork2" autoplay muted loop playsinline onclick="openModal(this)">
-                            <source src="recent_works/rezedenji.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                    <div class="video-card" id="dispatchCard" data-index="2">
+                        <div class="video-container">
+                            <div class="video-horizontal">
+                                <video id="recentWork3" autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="recent_works/dispatch.mp4" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <a href="https://www.tiktok.com/@cynhyo/video/7575974752636947720" target="_blank" class="video-tiktok-bottom">
+                                <span>dispatch.mp4 // TikTok</span>
+                            </a>
+                        </div>
                     </div>
-                    <a href="https://www.tiktok.com/@cynhyo/video/7568189301809401106" target="_blank" class="video-tiktok-bottom">
-                        <span>rezedenji.mp4 // TikTok</span>
-                    </a>
                 </div>
                 
-                <div class="video-container">
-                    <div class="video-horizontal">
-                        <video id="recentWork3" autoplay muted loop playsinline onclick="openModal(this)">
-                            <source src="recent_works/dispatch.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                    <a href="https://www.tiktok.com/@cynhyo/video/7575974752636947720" target="_blank" class="video-tiktok-bottom">
-                        <span>dispatch.mp4 // TikTok</span>
-                    </a>
+                <div class="carousel-nav" id="prevEdit" onclick="rotateCarousel(-1)">
+                    <span style="font-size: 1.5rem; transform: translateX(-2px);">&lt;</span>
+                </div>
+                <div class="carousel-nav" id="nextEdit" onclick="rotateCarousel(1)">
+                    <span style="font-size: 1.5rem; transform: translateX(2px);">&gt;</span>
                 </div>
             </div>
             
-            <p class="section-subtitle">>> CODING PROJECTS <<</p>
-            
-            <div class="project-grid">
-                
-                <a href="https://qr-web-9i4q.onrender.com/" target="_blank" class="project-card">
-                    <p class="project-title">QR Code Generator</p>
-                    <div class="project-cube">QR</div>
-                </a>
-                
-                <a href="https://laincyn.github.io/the_marias/" target="_blank" class="project-card">
-                    <p class="project-title">ALBUM Player</p>
-                    <div class="project-cube play-button"></div>
-                </a>
-            </div>
         </section>
         
-        <section class="section animated-section" data-animation-delay="0.3">
+        <section class="section animated-section" data-animation-delay="0.4">
             <h2 class="section-title">Socials</h2>
             <div class="links-grid">
                 <a href="https://www.tiktok.com/@cynhyo" target="_blank" class="link-card tiktok">
@@ -913,11 +1039,6 @@
     <script>
         // --- Element Selection ---
         const inspoVideo = document.getElementById('inspoVideo');
-        const recentWork1 = document.getElementById('recentWork1');
-        const recentWork2 = document.getElementById('recentWork2');
-        const recentWork3 = document.getElementById('recentWork3');
-        const modal = document.getElementById('videoModal');
-        const modalVideo = document.getElementById('modalVideo');
         const bgMusic = document.getElementById('backgroundMusic');
         const landingScreen = document.getElementById('landingScreen');
         const mainContent = document.getElementById('mainContent');
@@ -928,13 +1049,131 @@
         const backToTopButton = document.getElementById('backToTop');
         const mainTitle = document.getElementById('mainTitle');
         const particlesContainer = document.getElementById('matrixParticles');
+        const modal = document.getElementById('videoModal');
+        const modalVideo = document.getElementById('modalVideo');
         
-        // --- Global Variables & Constants (MODIFIED) ---
-        const maxMusicVolume = 0.65; // Max actual volume for the <audio> element (relative to 1.0)
-        const defaultVolumeFraction = 0.6; // 60% of the total volume range (0 to 1) requested by user
+        // --- Global Variables & Constants (MODIFIED for Carousel) ---
+        const maxMusicVolume = 0.65; 
+        const defaultVolumeFraction = 0.6;
         let isDragging = false;
         let currentPlayingVideo = null; 
-        const videosToPlay = [inspoVideo, recentWork1, recentWork2, recentWork3];
+
+        // CAROUSEL ELEMENTS & LOGIC
+        const editsCarousel = document.getElementById('editsCarousel');
+        const videoCards = [
+             document.getElementById('rezedenjiCard'),
+             document.getElementById('cyreneCard'),
+             document.getElementById('dispatchCard')
+        ];
+        // Index 1 (cyreneCard) is the initial center video.
+        let centerIndex = 1; 
+        
+        // All videos to ensure they are played when the site starts
+        const videosToPlay = [
+            inspoVideo, 
+            videoCards[0].querySelector('video'), // rezedenji
+            videoCards[1].querySelector('video'), // cyrene
+            videoCards[2].querySelector('video')  // dispatch
+        ];
+
+        // --- CAROUSEL FUNCTIONS (NEW) ---
+
+        /**
+         * Updates the visual state of all video cards based on the new center index.
+         * Pauses videos that are not visible and plays the visible ones.
+         */
+        function updateCarouselVisuals() {
+            const numCards = videoCards.length;
+            
+            // Loop through all cards and assign the active class only to the center one
+            videoCards.forEach((card, index) => {
+                const isActive = index === centerIndex;
+                card.classList.toggle('is-active', isActive);
+                
+                const videoElement = card.querySelector('video');
+                
+                // Toggle play/pause (optional, but good for performance and UI)
+                if (videoElement) {
+                    if (isActive) {
+                        videoElement.play().catch(e => console.error("Video play failed:", e));
+                    } else {
+                        videoElement.pause();
+                    }
+                }
+            });
+
+            // Calculate the CSS transformation needed to keep the centerIndex video visually in the middle
+            // Base offset is to center the elements: 
+            // 1. Center of the container: 50%
+            // 2. Center the active video: -cardWidth/2 * activeScale
+            // 3. Offset to bring the correct video into center: - (centerIndex - 1) * cardWidth * scaleFactor
+
+            // For simplicity with variable card sizes, we'll use an array shift and CSS flexbox 
+            // to re-order the elements, which is cleaner than complex transform calculations.
+            // *The CSS `transition: transform` is applied to `edits-carousel` for the sliding effect.*
+        }
+
+        /**
+         * Rotates the video cards in the carousel (1 for right, -1 for left).
+         * This reorders the DOM elements to achieve the looping effect.
+         */
+        function rotateCarousel(direction) {
+            const numCards = videoCards.length;
+            const cardWidth = videoCards[0].offsetWidth;
+            const gap = 20; // from CSS .edits-carousel gap
+
+            // The 'center' video is always the one with the 'is-active' class.
+            
+            if (direction === 1) { // Rotate right (Next)
+                const firstCard = editsCarousel.firstElementChild;
+                editsCarousel.appendChild(firstCard);
+                // The logical center index shifts: 0 -> 1 -> 2 -> 0...
+                centerIndex = (centerIndex + 1) % numCards;
+            } else if (direction === -1) { // Rotate left (Previous)
+                const lastCard = editsCarousel.lastElementChild;
+                editsCarousel.prepend(lastCard);
+                // The logical center index shifts: 0 -> 2 -> 1 -> 0...
+                centerIndex = (centerIndex - 1 + numCards) % numCards;
+            }
+            
+            // Temporarily disable transition for DOM manipulation, then re-enable
+            editsCarousel.style.transition = 'none';
+            // Set position to center the current list of elements
+            editsCarousel.style.transform = 'translateX(0)'; 
+            
+            // Force reflow
+            void editsCarousel.offsetWidth;
+            
+            // Re-enable transition for the next shift
+            editsCarousel.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            // Apply the actual transition visually to move the new active item to the center
+            // The value is half the active card width + gap. 
+            // This is a complex value due to the scale(1.5), let's use a simpler visual approach:
+            // The DOM re-ordering itself handles the 'jump'. The transition is now purely for the `is-active` class.
+            
+            // Re-find elements in their new order
+            const currentCards = Array.from(editsCarousel.children);
+            
+            // Find the index of the element that is logically in the center
+            const activeCardIndex = Math.floor(numCards / 2); // Should always be 1 for 3 cards
+            
+            // Update classes
+            currentCards.forEach((card, index) => {
+                const isActive = index === activeCardIndex;
+                card.classList.toggle('is-active', isActive);
+
+                const videoElement = card.querySelector('video');
+                if (videoElement) {
+                    if (isActive) {
+                        videoElement.play().catch(e => console.error("Video play failed:", e));
+                    } else {
+                        videoElement.pause();
+                    }
+                }
+            });
+
+        }
 
         // --- 1. CLOCK & UI FUNCTIONS ---
 
@@ -997,8 +1236,23 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const section = entry.target;
-                    const delay = parseFloat(section.getAttribute('data-animation-delay')) || 0;
-                    section.style.transitionDelay = `${delay}s`;
+                    
+                    // Logic to assign delays based on the new, correct order
+                    let newDelay = 0.0;
+                    if (section.querySelector('.section-title')) {
+                         const titleText = section.querySelector('.section-title').textContent.trim();
+                         // The titles are hardcoded in this logic for staggered animation
+                         const delayMap = {
+                            'About Me': 0.0,
+                            'Coding Projects': 0.1,
+                            'Inspo': 0.2,
+                            'Edits Log': 0.3,
+                            'Socials': 0.4
+                        };
+                         newDelay = delayMap[titleText] !== undefined ? delayMap[titleText] : 0.0;
+                    } 
+                    
+                    section.style.transitionDelay = `${newDelay}s`;
                     section.classList.add('is-visible');
                     observer.unobserve(section);
                 }
@@ -1127,7 +1381,7 @@
         document.addEventListener('touchmove', handleDrag, { passive: false });
         document.addEventListener('touchend', stopDrag);
 
-        // --- 7. CORE SITE TRANSITION LOGIC (Modified for 60% start) ---
+        // --- 7. CORE SITE TRANSITION LOGIC ---
         
         function tryPlayingAllVideos() {
             videosToPlay.forEach(video => {
@@ -1143,7 +1397,7 @@
         function enterSite() {
             // 1. Audio setup: Start at 60% of the volume range
             bgMusic.volume = defaultVolumeFraction * maxMusicVolume; // Set initial volume (0.6 * 0.65)
-            bgMusic.currentTime = 0; // MODIFIED: Start music from 0:00
+            bgMusic.currentTime = 70; 
             bgMusic.play().catch(e => console.error("Audio play failed on site entry click:", e));
 
             // 2. Visual Transitions
@@ -1168,6 +1422,8 @@
              updateScroll(); 
              // Set the initial 60% volume state on load for the visual bars
              updateVolumeBars(defaultVolumeFraction);
+             // Initial setup for the carousel videos to ensure the correct one is playing
+             updateCarouselVisuals(); 
         }
 
         // --- 8. MODAL FUNCTIONS ---
