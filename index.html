@@ -343,7 +343,7 @@
             transition: transform 0.3s ease, box-shadow 0.5s ease;
         }
         
-        /* NEW RULE: Inspo Video Size (Ensure it's not affected by carousel styles) */
+        /* PRESERVE INAPSO SIZE (User Request) */
         #inspoSection .video-container {
             width: 450px; 
         }
@@ -476,49 +476,76 @@
 
 
         /* ------------------------------------------------------------------- */
-        /* --- EDITS LOG CAROUSEL STYLES --- */
+        /* --- EDITS LOG CAROUSEL STYLES (REVISED FOR VISIBLE ANIMATION) --- */
         /* ------------------------------------------------------------------- */
 
         .edits-carousel-container {
-            position: relative;
             max-width: 1000px;
             margin: 0 auto;
-            overflow: hidden;
-            padding: 0 50px; /* Space for the buttons */
+            position: relative;
+            overflow: visible; 
+            padding: 50px 50px; 
         }
         
-        .edits-carousel {
+        .edits-carousel-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation for rotation */
+            gap: 20px; 
+            will-change: transform;
         }
         
         .video-card {
-            min-width: 300px; /* Base size */
             width: 300px; 
-            box-sizing: border-box;
-            opacity: 0.4;
-            transform: scale(0.7);
-            filter: brightness(0.7);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none; /* Disable click on side videos */
+            flex-shrink: 0;
+            position: relative;
+            transform-origin: center center;
+            will-change: transform, opacity, filter;
+            
+            /* The transition must be applied here to the card element */
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
+                        opacity 0.4s ease,
+                        filter 0.6s ease,
+                        box-shadow 0.6s ease;
         }
 
-        .video-card.is-active {
+        /* Side Cards: Scale down, fade, and apply a small horizontal shift for motion illusion */
+        .video-card[data-position="side"] {
+            opacity: 0.4;
+            transform: scale(0.7); /* Base side scale */
+            filter: brightness(0.7);
+            pointer-events: none;
+            box-shadow: none;
+            z-index: 5;
+        }
+
+        /* Specific transform for left card (Card 1) */
+        #editsCarouselWrapper .video-card:first-child[data-position="side"] {
+             /* Combine scale and a slight left translation to emphasize movement */
+             transform: scale(0.7) translateX(-15%); 
+        }
+        /* Specific transform for right card (Card 3) */
+        #editsCarouselWrapper .video-card:last-child[data-position="side"] {
+             /* Combine scale and a slight right translation to emphasize movement */
+             transform: scale(0.7) translateX(15%); 
+        }
+
+        /* Center Card: Full scale, full opacity, zero translation */
+        .video-card[data-position="center"] {
             opacity: 1;
-            transform: scale(1.5); /* Highlighted size */
+            /* Full scale, zero translation */
+            transform: scale(1.5) translateX(0); 
             filter: brightness(1);
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8), 0 0 40px var(--color-red);
-            pointer-events: auto; /* Enable click on active video */
+            pointer-events: auto;
             z-index: 10;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8), 0 0 40px var(--color-red);
         }
         
-        /* Override base video-container styles for carousel cards */
+        /* Video Container inside card reset (prevents double scaling issues) */
         .video-card .video-container {
              width: 100%;
-             box-shadow: none; /* Let the card define the shadow/glow */
+             box-shadow: none; 
+             transform: none;
         }
         
         .video-card .video-container:hover {
@@ -527,6 +554,7 @@
         }
         
         .carousel-nav {
+            /* Position buttons relative to the container, which is now padded */
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
@@ -671,7 +699,6 @@
         /* --- MODAL (Video Fullscreen Fix) --- */
         /* ------------------------------------------------------------------- */
         #videoModal {
-            /* FIXED: Ensures modal covers the whole viewport */
             position: fixed;
             top: 0;
             left: 0;
@@ -803,7 +830,7 @@
                 height: 120px;
             }
             
-            /* Inspo video size for mobile */
+            /* Inspo video size for mobile (Preserved) */
             #inspoSection .video-container {
                 width: 90%; 
             }
@@ -825,12 +852,11 @@
 
             /* Edits Carousel Mobile Adjustments */
             .edits-carousel-container {
-                padding: 0 10px;
+                padding: 30px 5px; /* Reduced padding for mobile, but still preserves space */
             }
             
             .video-card {
-                 min-width: 200px;
-                 width: 200px;
+                 width: 150px;
             }
 
             .carousel-nav {
@@ -841,10 +867,20 @@
 
             #prevEdit { left: 5px; }
             #nextEdit { right: 5px; }
-
-            .video-card.is-active {
-                transform: scale(1.1);
+            
+            /* Adjust scale for mobile to prevent massive overflow */
+            .video-card[data-position="center"] {
+                transform: scale(1.3) translateX(0); 
             }
+            
+            /* Apply mobile shift for side cards */
+            #editsCarouselWrapper .video-card:first-child[data-position="side"] {
+                 transform: scale(0.7) translateX(-15%); 
+            }
+            #editsCarouselWrapper .video-card:last-child[data-position="side"] {
+                 transform: scale(0.7) translateX(15%); 
+            }
+
         }
     </style>
 </head>
@@ -939,57 +975,58 @@
             <h2 class="section-title">Edits Log</h2>
             
             <div class="edits-carousel-container">
-                <div class="edits-carousel" id="editsCarousel">
+                <div class="edits-carousel-wrapper" id="editsCarouselWrapper">
                     
-                    <div class="video-card" id="rezedenjiCard" data-index="0">
+                    <div class="video-card" id="editCard1" data-position="side">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video id="recentWork2" autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="recent_works/rezedenji.mp4" type="video/mp4">
+                                <video autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
-                            <a href="https://www.tiktok.com/@cynhyo/video/7568189301809401106" target="_blank" class="video-tiktok-bottom">
-                                <span>rezedenji.mp4 // TikTok</span>
+                            <a href="#" target="_blank" class="video-tiktok-bottom">
+                                <span></span>
                             </a>
                         </div>
                     </div>
                     
-                    <div class="video-card is-active" id="cyreneCard" data-index="1">
+                    <div class="video-card" id="editCard2" data-position="center">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video id="recentWork1" autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="recent_works/cyrene.mp4" type="video/mp4">
+                                <video autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
-                            <a href="https://www.tiktok.com/@cynhyo/video/7571472539432586503" target="_blank" class="video-tiktok-bottom">
-                                <span>cyrene.mp4 // TikTok</span>
+                            <a href="#" target="_blank" class="video-tiktok-bottom">
+                                <span></span>
                             </a>
                         </div>
                     </div>
 
-                    <div class="video-card" id="dispatchCard" data-index="2">
+                    <div class="video-card" id="editCard3" data-position="side">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video id="recentWork3" autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="recent_works/dispatch.mp4" type="video/mp4">
+                                <video autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
-                            <a href="https://www.tiktok.com/@cynhyo/video/7575974752636947720" target="_blank" class="video-tiktok-bottom">
-                                <span>dispatch.mp4 // TikTok</span>
+                            <a href="#" target="_blank" class="video-tiktok-bottom">
+                                <span></span>
                             </a>
                         </div>
                     </div>
+                    
                 </div>
                 
-                <div class="carousel-nav" id="prevEdit" onclick="rotateCarousel(-1)">
+                <button class="carousel-nav" id="prevEdit" onclick="rotateCarousel(-1)" aria-label="Previous Edit">
                     <span style="font-size: 1.5rem; transform: translateX(-2px);">&lt;</span>
-                </div>
-                <div class="carousel-nav" id="nextEdit" onclick="rotateCarousel(1)">
+                </button>
+                <button class="carousel-nav" id="nextEdit" onclick="rotateCarousel(1)" aria-label="Next Edit">
                     <span style="font-size: 1.5rem; transform: translateX(2px);">&gt;</span>
-                </div>
+                </button>
             </div>
             
         </section>
@@ -1019,7 +1056,7 @@
         </div>
 
     <div id="videoModal">
-        <span class="close" onclick="closeModal()">[X]</span>
+        <span class="close" onclick="closeModal()" role="button" aria-label="Close video modal">[X]</span>
         <div class="modal-content">
             <video id="modalVideo" controls loop preload="auto">
                 <source src="" type="video/mp4"> 
@@ -1028,7 +1065,7 @@
         </div>
     </div>
     
-    <button id="backToTop" onclick="scrollToTop()">^</button>
+    <button id="backToTop" onclick="scrollToTop()" aria-label="Back to top">^</button>
     
     <footer>
         <div class="footer-log">
@@ -1052,127 +1089,97 @@
         const modal = document.getElementById('videoModal');
         const modalVideo = document.getElementById('modalVideo');
         
-        // --- Global Variables & Constants (MODIFIED for Carousel) ---
+        // --- Global Variables & Constants ---
         const maxMusicVolume = 0.65; 
         const defaultVolumeFraction = 0.6;
         let isDragging = false;
         let currentPlayingVideo = null; 
 
-        // CAROUSEL ELEMENTS & LOGIC
-        const editsCarousel = document.getElementById('editsCarousel');
-        const videoCards = [
-             document.getElementById('rezedenjiCard'),
-             document.getElementById('cyreneCard'),
-             document.getElementById('dispatchCard')
+        // CAROUSEL DATA 
+        const editsData = [
+            { id: 'cyrene', src: 'recent_works/cyrene.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7571472539432586503', title: 'cyrene.mp4 // TikTok' },
+            { id: 'rezedenji', src: 'recent_works/rezedenji.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7568189301809401106', title: 'rezedenji.mp4 // TikTok' },
+            { id: 'dispatch', src: 'recent_works/dispatch.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7575974752636947720', title: 'dispatch.mp4 // TikTok' },
+            // Add more videos here if needed for the loop!
         ];
-        // Index 1 (cyreneCard) is the initial center video.
-        let centerIndex = 1; 
         
-        // All videos to ensure they are played when the site starts
-        const videosToPlay = [
-            inspoVideo, 
-            videoCards[0].querySelector('video'), // rezedenji
-            videoCards[1].querySelector('video'), // cyrene
-            videoCards[2].querySelector('video')  // dispatch
-        ];
+        const editsCarouselWrapper = document.getElementById('editsCarouselWrapper');
+        const visibleCards = Array.from(editsCarouselWrapper.children); // Static array of the 3 DOM elements
+        let currentDataIndex = 0; // Index of the video data currently displayed in the CENTER card.
 
-        // --- CAROUSEL FUNCTIONS (NEW) ---
-
+        // --- CAROUSEL FUNCTIONS (IMPLEMENTED SMOOTHNESS AND LOOPING LOGIC) ---
+        
         /**
-         * Updates the visual state of all video cards based on the new center index.
-         * Pauses videos that are not visible and plays the visible ones.
+         * Updates the content (src/link/title) and the visual state (data-position) 
+         * of the three visible video cards based on the currentDataIndex.
          */
-        function updateCarouselVisuals() {
-            const numCards = videoCards.length;
+        function updateCarouselContent() {
+            const totalData = editsData.length;
             
-            // Loop through all cards and assign the active class only to the center one
-            videoCards.forEach((card, index) => {
-                const isActive = index === centerIndex;
-                card.classList.toggle('is-active', isActive);
+            // Map the current center index to the indices for left and right
+            // Use modular arithmetic for infinite looping
+            const leftDataIndex = (currentDataIndex - 1 + totalData) % totalData;
+            const rightDataIndex = (currentDataIndex + 1) % totalData;
+            
+            const cardMap = [
+                { card: visibleCards[0], dataIndex: leftDataIndex, position: 'side' },
+                { card: visibleCards[1], dataIndex: currentDataIndex, position: 'center' },
+                { card: visibleCards[2], dataIndex: rightDataIndex, position: 'side' }
+            ];
+
+            // Update content and position attributes
+            cardMap.forEach(item => {
+                const data = editsData[item.dataIndex];
+                const videoElement = item.card.querySelector('video');
+                const linkElement = item.card.querySelector('.video-tiktok-bottom');
+                const sourceElement = videoElement.querySelector('source');
+
+                // 1. Update data/content (Virtual DOM approach)
+                sourceElement.src = data.src;
+                videoElement.load(); // Reload video with new source
+
+                linkElement.href = data.link;
+                linkElement.querySelector('span').textContent = data.title;
                 
-                const videoElement = card.querySelector('video');
+                // 2. Update visual state (CSS handles the smooth transition)
+                item.card.setAttribute('data-position', item.position);
                 
-                // Toggle play/pause (optional, but good for performance and UI)
-                if (videoElement) {
-                    if (isActive) {
-                        videoElement.play().catch(e => console.error("Video play failed:", e));
-                    } else {
-                        videoElement.pause();
-                    }
+                // 3. Control playback
+                if (item.position === 'center') {
+                    videoElement.play().catch(e => console.error("Video play failed:", e));
+                } else {
+                    videoElement.pause();
+                    videoElement.currentTime = 0; // Reset side videos
                 }
             });
-
-            // Calculate the CSS transformation needed to keep the centerIndex video visually in the middle
-            // Base offset is to center the elements: 
-            // 1. Center of the container: 50%
-            // 2. Center the active video: -cardWidth/2 * activeScale
-            // 3. Offset to bring the correct video into center: - (centerIndex - 1) * cardWidth * scaleFactor
-
-            // For simplicity with variable card sizes, we'll use an array shift and CSS flexbox 
-            // to re-order the elements, which is cleaner than complex transform calculations.
-            // *The CSS `transition: transform` is applied to `edits-carousel` for the sliding effect.*
+            
+            // Ensure all videos play after being loaded/updated to prevent blank frames
+            tryPlayingAllVideos();
         }
 
+
         /**
-         * Rotates the video cards in the carousel (1 for right, -1 for left).
-         * This reorders the DOM elements to achieve the looping effect.
+         * Rotates the carousel data index and triggers the content update.
+         * @param {number} direction - 1 for right (next), -1 for left (previous).
          */
         function rotateCarousel(direction) {
-            const numCards = videoCards.length;
-            const cardWidth = videoCards[0].offsetWidth;
-            const gap = 20; // from CSS .edits-carousel gap
+            const totalData = editsData.length;
+            
+            // Disable buttons temporarily to prevent rapid clicks during animation
+            document.getElementById('prevEdit').disabled = true;
+            document.getElementById('nextEdit').disabled = true;
 
-            // The 'center' video is always the one with the 'is-active' class.
+            // Calculate new center index (using modular arithmetic for looping)
+            currentDataIndex = (currentDataIndex + direction + totalData) % totalData;
             
-            if (direction === 1) { // Rotate right (Next)
-                const firstCard = editsCarousel.firstElementChild;
-                editsCarousel.appendChild(firstCard);
-                // The logical center index shifts: 0 -> 1 -> 2 -> 0...
-                centerIndex = (centerIndex + 1) % numCards;
-            } else if (direction === -1) { // Rotate left (Previous)
-                const lastCard = editsCarousel.lastElementChild;
-                editsCarousel.prepend(lastCard);
-                // The logical center index shifts: 0 -> 2 -> 1 -> 0...
-                centerIndex = (centerIndex - 1 + numCards) % numCards;
-            }
+            // Update the visible cards' content/state. The CSS transition handles the smooth slide/scale.
+            updateCarouselContent();
             
-            // Temporarily disable transition for DOM manipulation, then re-enable
-            editsCarousel.style.transition = 'none';
-            // Set position to center the current list of elements
-            editsCarousel.style.transform = 'translateX(0)'; 
-            
-            // Force reflow
-            void editsCarousel.offsetWidth;
-            
-            // Re-enable transition for the next shift
-            editsCarousel.style.transition = 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-            
-            // Apply the actual transition visually to move the new active item to the center
-            // The value is half the active card width + gap. 
-            // This is a complex value due to the scale(1.5), let's use a simpler visual approach:
-            // The DOM re-ordering itself handles the 'jump'. The transition is now purely for the `is-active` class.
-            
-            // Re-find elements in their new order
-            const currentCards = Array.from(editsCarousel.children);
-            
-            // Find the index of the element that is logically in the center
-            const activeCardIndex = Math.floor(numCards / 2); // Should always be 1 for 3 cards
-            
-            // Update classes
-            currentCards.forEach((card, index) => {
-                const isActive = index === activeCardIndex;
-                card.classList.toggle('is-active', isActive);
-
-                const videoElement = card.querySelector('video');
-                if (videoElement) {
-                    if (isActive) {
-                        videoElement.play().catch(e => console.error("Video play failed:", e));
-                    } else {
-                        videoElement.pause();
-                    }
-                }
-            });
-
+            // Re-enable buttons after transition time
+            setTimeout(() => {
+                document.getElementById('prevEdit').disabled = false;
+                document.getElementById('nextEdit').disabled = false;
+            }, 600); // Matches the CSS transition time
         }
 
         // --- 1. CLOCK & UI FUNCTIONS ---
@@ -1380,15 +1387,27 @@
         volumeControl.addEventListener('touchstart', (e) => startDrag(e), { passive: false });
         document.addEventListener('touchmove', handleDrag, { passive: false });
         document.addEventListener('touchend', stopDrag);
-
+        
         // --- 7. CORE SITE TRANSITION LOGIC ---
         
         function tryPlayingAllVideos() {
+            // Include Inspo video
+            const videosToPlay = [inspoVideo]; 
+            // Include the three visible carousel videos
+            visibleCards.forEach(card => {
+                videosToPlay.push(card.querySelector('video'));
+            });
+
             videosToPlay.forEach(video => {
                 if(video) { 
-                    video.play().catch(e => {
-                        console.error(`Video autoplay failed for ${video.id}:`, e);
-                    });
+                    // Attempt to play only if the site is already active (to avoid double play attempts on load)
+                    if (mainContent.classList.contains('fade-in-content')) {
+                        video.play().catch(e => {
+                            if (e.name !== 'NotAllowedError') {
+                                 console.error(`Video autoplay failed for ${video.id || 'carousel'}:`, e);
+                            }
+                        });
+                    }
                 }
             });
         }
@@ -1422,23 +1441,35 @@
              updateScroll(); 
              // Set the initial 60% volume state on load for the visual bars
              updateVolumeBars(defaultVolumeFraction);
-             // Initial setup for the carousel videos to ensure the correct one is playing
-             updateCarouselVisuals(); 
+             
+             // Initial setup for the carousel
+             updateCarouselContent(); 
         }
-
+        
         // --- 8. MODAL FUNCTIONS ---
         
         function openModal(videoElement) {
+            /* CHANGED: Start: Pause, reset time, and play the clicked video before opening the modal. */
+            videoElement.pause();
+            videoElement.currentTime = 0; 
+            videoElement.play().catch(e => {
+                // Safely ignore promise rejection if autoplay is blocked
+                if (e.name !== 'NotAllowedError') {
+                     console.error(`Video play failed on click (reset):`, e);
+                }
+            });
+            /* CHANGED: End */
+            
             // Stop background music temporarily
             bgMusic.pause();
             
             currentPlayingVideo = videoElement; 
-            videoElement.pause(); 
+            // videoElement.pause(); // Removed, as it is done above
             
             modalVideo.querySelector('source').src = videoElement.querySelector('source').src;
             modalVideo.load(); 
-            // Ensures the modal video starts at the beginning (0:00)
-            modalVideo.currentTime = 0; 
+            // Since we reset the background video to 0, the modal should also start at 0
+            modalVideo.currentTime = 0; // Changed from original logic to 0 for consistency
             modalVideo.muted = false; 
             
             modal.style.display = "flex"; 
@@ -1450,6 +1481,7 @@
             
             if (currentPlayingVideo) {
                 // Background video resumes its loop/current time
+                currentPlayingVideo.currentTime = modalVideo.currentTime; // Sync time back
                 currentPlayingVideo.play();
             }
             
@@ -1465,6 +1497,14 @@
         document.addEventListener('keydown', function(event) {
             if (event.key === "Escape" && modal.style.display === "flex") {
                 closeModal();
+            }
+            // Accessibility: Add keyboard navigation for carousel
+            if (mainContent.classList.contains('fade-in-content')) {
+                 if (event.key === "ArrowRight") {
+                    document.getElementById('nextEdit').click();
+                 } else if (event.key === "ArrowLeft") {
+                    document.getElementById('prevEdit').click();
+                 }
             }
         });
     </script>
