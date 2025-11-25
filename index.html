@@ -3,55 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>cyn</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>CYN // SYSTEM ONLINE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <style>
+        /* ------------------------------------------------------------------- */
         /* --- GLOBAL & BASE STYLES --- */
+        /* ------------------------------------------------------------------- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: auto; 
+        }
+
+        :root {
+            --color-red: #ff6b6b;
+            --color-dark-red: #cc5656;
+            --color-background: #000000;
+            --color-panel-bg: rgba(255, 255, 255, 0.05);
+            --color-panel-border: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Space Mono', monospace, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #ffffff;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+            background-color: var(--color-background);
+            cursor: auto; 
         }
         
-        /* --- BACKGROUND STYLES --- */
-        .background {
+        /* ------------------------------------------------------------------- */
+        /* --- ESSENTIAL VISUAL EFFECTS & OVERLAYS --- */
+        /* ------------------------------------------------------------------- */
+
+        /* Scroll Progress Bar */
+        #progressBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, var(--color-red) 50%, #ffaaaa 100%);
+            z-index: 99;
+            box-shadow: 0 0 10px var(--color-red);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Particle Background Container */
+        .particles-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #111111 0%, #333333 100%); 
-            background-size: 400% 400%;
-            transition: background 1s ease-out; 
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -2; 
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+        .particles-container.active {
+            opacity: 0.5;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--color-red);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--color-red);
+            opacity: 0;
+            animation: matrix-dust 15s linear infinite;
+        }
+
+        @keyframes matrix-dust {
+            0% { transform: translate(var(--x1), var(--y1)) scale(1); opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 0; }
+            100% { transform: translate(var(--x2), var(--y2)) scale(0.5); opacity: 0; }
+        }
+
+        /* Dynamic Glitch Animation Classes (Applied by JS) */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            text-shadow: 0 0 10px var(--color-red);
             z-index: -1;
         }
 
-        .background.active {
-            background: linear-gradient(135deg, #000000 0%, #1a0000 25%, #330000 50%, #1a0000 75%, #000000 100%);
-            animation: gradientFlow 15s ease infinite; 
-        }
-
-        @keyframes gradientFlow {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+        .glitch-text::after {
+            color: #00ffff;
+            opacity: 0.5;
+            z-index: -2;
         }
         
-        /* --- LANDING SCREEN STYLES --- */
+        .glitch-flicker::before {
+            animation: glitch-flicker-anim 0.05s infinite alternate;
+        }
+        
+        .glitch-flicker::after {
+            animation: glitch-flicker-anim 0.05s infinite alternate-reverse;
+        }
+
+        @keyframes glitch-flicker-anim {
+            0% { transform: translate(1px, -1px); opacity: 0.8; }
+            100% { transform: translate(-1px, 1px); opacity: 1; }
+        }
+
+        /* ------------------------------------------------------------------- */
+        /* --- LANDING SCREEN & ENTRY --- */
+        /* ------------------------------------------------------------------- */
         #landingScreen {
             position: fixed;
             top: 0;
@@ -62,7 +134,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.7); 
+            background: rgba(0, 0, 0, 0.9); 
             transition: opacity 1s ease-out, visibility 1s ease-out;
         }
 
@@ -70,55 +142,33 @@
             opacity: 0;
             visibility: hidden;
         }
-
-        /* --- ENTER SITE BUTTON --- */
+        
         #enterButton {
             font-family: 'Press Start 2P', monospace; 
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             color: #fff;
             padding: 20px 40px;
-            border: 2px solid #ff6b6b;
-            border-radius: 50px; 
+            border: 2px solid var(--color-red);
+            border-radius: 5px; 
             font-size: 1rem; 
-            cursor: pointer;
+            cursor: pointer; 
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
             width: 300px;
             max-width: 90vw;
+            letter-spacing: 2px;
         }
         
         #enterButton:hover {
-            background: rgba(255, 107, 107, 0.2);
-            box-shadow: 0 0 30px rgba(255, 107, 107, 0.8);
-            transform: scale(1.03); 
+            background: rgba(255, 107, 107, 0.1);
+            box-shadow: 0 0 30px var(--color-red), 0 0 50px rgba(255, 107, 107, 0.5);
+            transform: scale(1.05); 
         }
         
-        #enterButton .enter-text {
-            position: relative;
-            z-index: 2;
-        }
+        /* ------------------------------------------------------------------- */
+        /* --- MAIN CONTENT & HEADER --- */
+        /* ------------------------------------------------------------------- */
 
-        #enterButton .triangle-icon {
-            font-size: 1.5rem;
-            position: absolute;
-            right: 20px;
-            opacity: 0;
-            transition: opacity 0.4s ease-in-out;
-            color: #ff6b6b;
-            text-shadow: 0 0 5px #ff6b6b;
-            font-family: inherit;
-        }
-
-        #enterButton:hover .triangle-icon {
-            opacity: 1;
-        }
-
-        /* --- MAIN CONTENT STYLES --- */
         #mainContent {
             opacity: 0; 
             visibility: hidden;
@@ -132,277 +182,150 @@
             visibility: visible;
         }
 
-        /* NEW: Fade-In Slide Up Keyframe */
-        @keyframes fadeInSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* NEW: Class for sections that will be animated */
-        .animated-section {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        /* NEW: Apply animation to sections when main content is visible */
-        #mainContent.fade-in-content .animated-section {
-            opacity: 1;
-            transform: translateY(0);
-            /* This animation will be controlled by JS for staggered delay */
-            animation: fadeInSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-        
-        /* Styling for the new Date/Time display */
-        #dateTime {
-            font-family: 'Press Start 2P', monospace; 
-            font-size: 0.75rem;
-            color: #ffffff;
-            margin-bottom: 25px;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        
-        /* Profile Picture Styles */
-        .profile-pic-container {
-            text-align: center; 
-            margin-bottom: 10px;
-        }
-
-        .profile-pic {
-            width: 180px; 
-            height: 180px;
-            border-radius: 50%; 
-            object-fit: cover; 
-            border: 3px solid #ff6b6b; 
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 
-                        0 0 5px rgba(255, 107, 107, 0.3); 
-            transition: transform 0.3s ease, box-shadow 0.5s ease;
-        }
-
-        .profile-pic:hover {
-            transform: scale(1.05) rotate(-3deg);
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7), 
-                        0 0 20px rgba(255, 107, 107, 0.8),
-                        0 0 40px rgba(255, 107, 107, 0.5);
-        }
-        
-        .subtitle {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-            font-size: 1rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 15px;
-        }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 60px 20px 100px 20px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 60px; /* Reduced header bottom margin */
+            margin-bottom: 80px; 
             padding-top: 40px;
+        }
+        
+        #dateTime {
+            font-family: 'Space Mono', monospace; 
+            font-size: 1.2rem; 
+            color: var(--color-red);
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.5);
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            opacity: 0.8;
         }
 
         h1 {
-            font-size: 5rem;
-            font-weight: 700;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 3rem; 
             letter-spacing: 8px;
             text-transform: lowercase;
-            color: #ff6b6b;
-            text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
-            margin-top: 10px; 
-            margin-bottom: 25px; 
+            color: var(--color-red);
+            text-shadow: 0 0 25px rgba(255, 107, 107, 0.7);
+            margin-top: 20px; 
+            margin-bottom: 10px; 
+            position: relative;
+            display: inline-block;
+        }
+        
+        .subtitle {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 15px;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
         }
 
-        /* REFINEMENT 1: Frosted Glass Effect on Sections */
+        .profile-pic {
+            width: 225px; 
+            height: 225px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            border: 3px solid var(--color-red); 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.7), 
+                        0 0 15px var(--color-red); 
+            transition: transform 0.3s ease;
+            animation: profile-glow 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes profile-glow {
+            from { box-shadow: 0 0 10px rgba(0, 0, 0, 0.7), 0 0 10px var(--color-red); }
+            to { box-shadow: 0 0 20px rgba(0, 0, 0, 0.7), 0 0 30px var(--color-red), 0 0 40px rgba(255, 107, 107, 0.4); }
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05) rotate(-3deg);
+        }
+
+        /* ------------------------------------------------------------------- */
+        /* --- SECTION PANELS --- */
+        /* ------------------------------------------------------------------- */
+
         .section {
-            /* ORIGINAL: 80px | NEW: Reduced spacing between sections */
-            margin-bottom: 30px; 
-            background: rgba(255, 255, 255, 0.05); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(10px); 
+            margin-bottom: 40px; 
+            background: var(--color-panel-bg); 
+            border: 1px solid var(--color-panel-border); 
+            backdrop-filter: blur(12px); 
             border-radius: 15px; 
             padding: 40px; 
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.4);
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+            transition: box-shadow 0.5s ease, transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
         }
 
-        /* REFINEMENT 2: Hover effect for sections */
+        .section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
         .section:hover {
-            box-shadow: 0 10px 60px rgba(255, 107, 107, 0.2); 
-            transform: translateY(-3px); 
+            box-shadow: 0 10px 60px rgba(255, 107, 107, 0.3), 0 0 5px var(--color-red); 
+            transform: translateY(-5px); 
         }
 
         .section-title {
-            font-size: 2rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem; 
             margin-bottom: 30px;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            color: #ff8787;
-            border-bottom: 2px solid #ff6b6b;
+            letter-spacing: 3px;
+            color: var(--color-red);
+            border-bottom: 2px dashed rgba(255, 107, 107, 0.5); 
             padding-bottom: 15px;
             text-align: center; 
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 400px;
         }
         
-        /* Styles for the white section subtitles (edits, coding projects) */
+        .section-title::before {
+            content: "// ";
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+
         .section-subtitle {
             font-family: 'Press Start 2P', monospace; 
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #ffffff; 
             margin-top: 25px; 
             margin-bottom: 20px;
             text-align: center;
             letter-spacing: 1px;
             opacity: 0.8;
+            text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
         }
 
         .about-info {
             text-align: center;
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto 30px auto;
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
             padding: 0 10px;
         }
-
-        /* --- LINKS STYLES --- */
-        .links-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-top: 30px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .link-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 50px;
-            text-decoration: none;
-            color: #ffffff;
-            transition: all 0.5s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        /* REFINEMENT 3: Add subtle shine effect on link hover */
-        .link-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%; 
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
-            transition: transform 0.5s ease-out;
-            z-index: 1;
-        }
-
-        .link-card:hover::before {
-            transform: translateX(200%); 
-        }
-
-        .link-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border-color: #ff6b6b; /* Highlight border on hover */
-        }
-        /* Specific Link Hover Colors (enhanced) */
-        .link-card.tiktok:hover { border-color: #4a148c; background: rgba(74, 20, 140, 0.3); color: #ba68c8; }
-        .link-card.discord:hover { border-color: #5865f2; background: rgba(88, 101, 242, 0.3); color: #7289da; }
-        .link-card.twitter:hover { border-color: #1d4ed8; background: rgba(29, 78, 216, 0.3); color: #60a5fa; }
-        .link-card.github:hover { border-color: #374151; background: rgba(55, 65, 81, 0.3); color: #9ca3af; }
-
-        .link-card h3 {
-            font-size: 1.2rem;
-            margin: 0;
-            font-weight: 500;
-        }
-
-        .link-card p {
-            display: none;
-        }
-
-        /* --- PROJECT CUBES STYLES --- */
-        .project-grid {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 40px;
-            margin-top: 30px;
-        }
-
-        .project-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #ffffff;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-            max-width: 150px;
-        }
-
-        .project-card:hover {
-            transform: translateY(-8px);
-            opacity: 0.9;
-        }
-
-        .project-title {
-            font-size: 0.8rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-family: 'Press Start 2P', monospace; 
-        }
-
-        .project-cube {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 107, 107, 0.15); 
-            border: 2px solid #ff6b6b;
-            box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 2rem;
-            font-family: 'Press Start 2P', monospace;
-            border-radius: 5px; 
-            transition: all 0.3s ease;
-        }
         
-        .project-cube:hover {
-            background: rgba(255, 107, 107, 0.3);
-            box-shadow: 0 0 25px #ff6b6b;
-        }
-
-        .project-cube.play-button::before {
-            content: '▶'; 
-            color: #ff6b6b;
-            font-size: 2.5rem;
-            line-height: 1;
-            transform: translateX(2px);
-            display: inline-block;
-        }
-
-        /* --- VIDEO PLAYER & MODAL STYLES --- */
+        /* ------------------------------------------------------------------- */
+        /* --- VIDEOS & PROJECTS --- */
+        /* ------------------------------------------------------------------- */
         .video-grid {
             display: flex;
             justify-content: center;
@@ -413,157 +336,376 @@
 
         .video-container {
             position: relative;
-            max-width: 300px; 
-            margin: 15px auto; 
-            width: 100%; 
+            width: 450px; /* MODIFIED: Increased from 300px to 450px (1.5x larger) */
             border-radius: 10px; 
             overflow: hidden;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.5s ease;
+        }
+        
+        /* New aspect ratio container for 16:9 (Horizontal) videos */
+        .video-horizontal {
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio (9 / 16 * 100) */
+            position: relative;
+        }
+        
+        .video-horizontal video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            display: block;
         }
 
         .video-container:hover {
-            transform: scale(1.02); /* Subtle hover on video containers */
-        }
-
-        #recentWorksSection .video-grid > .video-container:first-child {
-            max-width: 350px; 
+            transform: scale(1.02);
+            box-shadow: 0 0 10px var(--color-red), 0 0 30px rgba(255, 107, 107, 0.4);
         }
         
-        .video-container video {
-            width: 100%;
-            height: auto;
-            display: block;
-            cursor: pointer;
-        }
-        
-        /* REFINEMENT 4: Enhanced TikTok bottom bar */
         .video-tiktok-bottom {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.8); 
-            padding: 10px 0;
-            text-align: center;
-            font-size: 0.9rem;
-            color: white;
+            background: rgba(0, 0, 0, 0.9); 
+            transition: background 0.3s ease, color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: block;
             text-decoration: none;
-            z-index: 10;
-            transition: background 0.3s ease;
-        }
-
-        .video-tiktok-bottom:hover {
-            background: #ff6b6b; /* Solid red on hover */
-            color: #111111;
+            color: white;
+            padding: 10px 0;
+            font-size: 0.9rem;
+            text-align: center;
         }
         
-        .modal {
-            display: none; 
-            position: fixed;
-            z-index: 100; 
-            left: 0;
+        .video-tiktok-bottom::before {
+            content: ">> CLICK TO VIEW SOURCE";
+            position: absolute;
             top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.9); 
+            background: var(--color-red);
+            color: #111111;
+            display: flex;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 0.65rem;
+        }
+
+        .video-tiktok-bottom:hover::before {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .video-tiktok-bottom span {
+            display: block;
+            transition: opacity 0.3s;
+        }
+        .video-tiktok-bottom:hover span {
+            opacity: 0;
+        }
+        
+        /* Coding Projects Grid */
+        .project-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap; 
+        }
+
+        .project-card {
+            display: flex;
             flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: scale(1.05);
+        }
+
+        .project-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Project Cube/Icon Style */
+        .project-cube {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 107, 107, 0.1); 
+            border: 2px solid var(--color-dark-red);
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+            border-radius: 10px; 
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 1.5rem;
+            color: var(--color-red);
+        }
+        
+        .project-cube:hover {
+            background: rgba(255, 107, 107, 0.25);
+            box-shadow: 0 0 25px var(--color-red);
+            transform: scale(1.1);
+        }
+        
+        .project-cube.play-button::before {
+            content: "▶";
+            font-size: 2rem;
+            color: var(--color-red);
+            text-shadow: 0 0 5px var(--color-red);
+        }
+
+
+        /* ------------------------------------------------------------------- */
+        /* --- LINKS (SOCIALS) --- */
+        /* ------------------------------------------------------------------- */
+        .links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid var(--color-panel-border);
+            border-radius: 10px; 
+            padding: 20px 30px;
+            text-align: left;
+            position: relative;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .link-card h3 {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            color: var(--color-red);
+            transition: color 0.3s;
+        }
+        
+        .link-card p {
+            display: block; 
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+        }
+        .link-card:hover h3 {
+            color: #ffffff;
+        }
+        .link-card::after {
+            content: '[]';
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--color-red);
+            opacity: 0.5;
+            transition: opacity 0.3s, transform 0.3s;
+            font-family: 'Press Start 2P', monospace;
+        }
+        .link-card:hover::after {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* ------------------------------------------------------------------- */
+        /* --- VOLUME CONTROL (Frequency Bar Style) --- */
+        /* ------------------------------------------------------------------- */
+        #volumeControl {
+            position: fixed; 
+            bottom: 30px; /* Position at bottom left */
+            left: 30px;
+            width: 25px; /* Narrower, like a frequency column */
+            height: 150px; /* Taller */
+            background: rgba(0, 0, 0, 0.5); 
+            border: 1px solid var(--color-panel-border); 
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column-reverse; /* Bars start from bottom */
+            justify-content: flex-start;
+            align-items: center;
+            padding: 5px 0;
+            cursor: ns-resize; /* Indicates vertical drag */
+            z-index: 50; 
+            transition: opacity 0.3s ease;
+        }
+
+        .volume-bar {
+            width: 80%;
+            height: 10px; 
+            margin: 1px 0;
+            background: rgba(255, 255, 255, 0.1); 
+            border-radius: 2px;
+            transition: background 0.2s, box-shadow 0.2s;
+            transform-origin: bottom;
+            opacity: 1 !important; /* Ensure consistency */
+            /* Add a small rotation for a dynamic look */
+            transform: rotateX(20deg); 
+        }
+
+        .volume-bar.active {
+            /* Base active color is red, blending to white */
+            background: linear-gradient(to top, var(--color-red), #ffaaaa);
+            box-shadow: 0 0 5px var(--color-red);
+            transform: rotateX(0deg); /* Straighten when active */
+        }
+        
+        /* Target the top bar (index 9) for the white 100% effect */
+        .volume-bar[data-index="9"].active {
+            background: white; 
+            box-shadow: 0 0 10px white, 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        /* ------------------------------------------------------------------- */
+        /* --- MODAL (Video Fullscreen Fix) --- */
+        /* ------------------------------------------------------------------- */
+        #videoModal {
+            /* FIXED: Ensures modal covers the whole viewport */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95); /* Nearly black background for contrast */
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* High z-index to be on top */
         }
         
         .modal-content {
             position: relative;
-            max-width: 90%;
-            max-height: 90%;
-            margin: auto;
-            display: block;
+            max-width: 90%; 
+            max-height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        
+
         #modalVideo {
-            width: 100%;
-            height: auto;
-            max-height: 90vh; 
+            width: auto; 
+            max-width: 100%;
+            max-height: 90vh;
             display: block;
-            border-radius: 10px;
+            border: 3px solid var(--color-red);
+            box-shadow: 0 0 25px rgba(255, 107, 107, 0.8);
         }
 
         .close {
             position: absolute;
-            top: 15px;
+            top: 20px;
             right: 35px;
-            color: #f1f1f1;
+            color: var(--color-red);
             font-size: 40px;
             font-weight: bold;
             transition: 0.3s;
             cursor: pointer;
-            z-index: 101;
+            z-index: 2001; 
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            font-family: 'Space Mono', monospace;
         }
 
         .close:hover,
         .close:focus {
-            color: #ff6b6b;
+            color: #fff;
             text-decoration: none;
             cursor: pointer;
         }
 
-        /* --- VOLUME CONTROL STYLES --- */
-        #volumeControl {
+        /* ------------------------------------------------------------------- */
+        /* --- UTILITIES --- */
+        /* ------------------------------------------------------------------- */
+
+        /* Back to Top Button */
+        #backToTop {
             position: fixed;
-            bottom: 20px;
-            left: 20px;
-            width: 25px; 
-            height: 100px; 
-            display: flex;
-            flex-direction: column-reverse; 
-            justify-content: space-around;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--color-red);
+            color: var(--color-background);
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            display: none; 
             align-items: center;
-            padding: 5px 0;
-            cursor: ns-resize; 
-            z-index: 10; 
-            user-select: none;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: background 0.3s;
+            justify-content: center;
+            cursor: pointer; 
+            z-index: 50;
+            opacity: 0.8;
+            transition: opacity 0.3s, transform 0.3s, background 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
         }
 
-        #volumeControl:hover, #volumeControl.active {
-             background: rgba(255, 255, 255, 0.2);
-             box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        #backToTop:hover {
+            opacity: 1;
+            transform: translateY(-5px) scale(1.1);
+            background: #ffffff;
+            color: var(--color-red);
         }
 
-        .volume-bar {
-            width: 60%;
-            height: 4px; 
-            background-color: white;
-            border-radius: 2px;
-            transition: background-color 0.1s, opacity 0.1s, box-shadow 0.1s, width 0.3s ease;
-            box-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
+        /* Footer Console */
+        footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 20px 40px 20px;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
         }
-        .volume-bar.active {
-            background-color: #ff6b6b;
-            box-shadow: 0 0 5px #ff6b6b, 0 0 10px #ff6b6b; 
+        
+        .footer-log {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        
+        .footer-log p:first-child {
+            color: var(--color-red);
+            text-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+            margin-bottom: 5px;
         }
 
 
+        /* ------------------------------------------------------------------- */
+        /* --- MEDIA QUERIES (Ensuring Mobile Stability) --- */
+        /* ------------------------------------------------------------------- */
         @media (max-width: 768px) {
-            .container {
-                padding: 40px 10px;
-            }
-            .section {
-                padding: 20px;
-                margin-bottom: 20px; /* Smaller gap on mobile */
-            }
             h1 {
-                font-size: 3rem;
-                letter-spacing: 4px;
+                font-size: 2.5rem; 
+                letter-spacing: 3px;
             }
 
             .section-title {
-                font-size: 1.5rem;
+                font-size: 1.2rem;
             }
 
             #enterButton {
@@ -571,19 +713,36 @@
                 padding: 15px 30px;
             }
 
+            .profile-pic {
+                width: 120px;
+                height: 120px;
+            }
+            
+            /* ADJUSTED FOR MOBILE: Keep video relatively large */
+            .video-container {
+                width: 90%; 
+            }
+            
+            .project-grid {
+                gap: 10px;
+            }
+
             #volumeControl {
-                bottom: 10px;
-                left: 10px;
-                height: 80px; 
+                left: 15px;
+                bottom: 15px;
+                width: 20px;
+                height: 120px;
             }
         }
     </style>
 </head>
 <body>
+    
+    <div id="progressBar"></div>
+
     <div id="landingScreen">
         <button id="enterButton" onclick="enterSite()">
-            <span class="enter-text">ENTER SITE</span>
-            <span class="triangle-icon">▶</span>
+            <span class="enter-text"> >ENTER SITE< </span>
         </button>
     </div>
 
@@ -592,6 +751,9 @@
         Your browser does not support the audio element.
     </audio>
 
+    <div class="particles-container" id="matrixParticles">
+    </div>
+    
     <div class="background" id="mainBackground"></div>
     
     <div id="volumeControl">
@@ -611,75 +773,86 @@
         <header>
             <div id="dateTime"></div> 
             
-            <h1>cyn</h1>
+            <h1 class="glitch-text" data-text="cyn" id="mainTitle">cyn</h1>
             
             <div class="profile-pic-container">
-                                <img src="png/joker.jpg" alt="Profile Picture of The Joker" class="profile-pic">
+                <img src="png/joker.jpg" alt="Profile Picture of The Joker" class="profile-pic">
             </div>
             
-            <p class="subtitle">made with html, css, and js.</p>
+            <p class="subtitle">>>> System Online. Welcome, User.</p>
         </header>
 
-        <section class="section animated-section">
+        <section class="section animated-section" data-animation-delay="0.0">
             <h2 class="section-title">About Me</h2>
             <p class="about-info">
-                intp | aspiring premiere pro & ae editor | currently learning python, c++, html, css, and javascript
+                INTP | aspiring premiere pro & ae editor | currently learning python, c++, html, css, and javascript.
+                <br>
+                special thanks to inspos, @zeropointer & @junekept for help !!
             </p>
         </section>
         
-        <section class="section animated-section">
+        <section class="section animated-section" data-animation-delay="0.1">
             <h2 class="section-title">Inspo</h2>
-            <div class="video-container">
-                <video id="inspoVideo" autoplay muted loop playsinline onclick="openModal(this)">
-                    <source src="inspo/kaguya1.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                
-                <a href="https://www.tiktok.com/@dcomics0/video/7547897732103458062" target="_blank" class="video-tiktok-bottom">
-                    Click here to view on TikTok
-                </a>
+            <div class="video-grid">
+                <div class="video-container">
+                    <div class="video-horizontal">
+                        <video id="inspoVideo" autoplay muted loop playsinline onclick="openModal(this)">
+                            <source src="inspo/kaguya1.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <a href="https://www.tiktok.com/@dcomics0/video/7547897732103458062" target="_blank" class="video-tiktok-bottom">
+                        <span>Inspo // kaguya1.mp4</span>
+                    </a>
+                </div>
             </div>
         </section>
         
-        <section class="section animated-section" id="recentWorksSection">
+        <section class="section animated-section" id="recentWorksSection" data-animation-delay="0.2">
             <h2 class="section-title">Recent Works</h2>
             
-            <p class="section-subtitle">edits</p>
+            <p class="section-subtitle">>> EDITS LOG <<</p>
             
             <div class="video-grid">
                 
                 <div class="video-container">
-                    <video id="recentWork1" autoplay muted loop playsinline onclick="openModal(this)">
-                        <source src="recent_works/cyrene.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <div class="video-horizontal">
+                        <video id="recentWork1" autoplay muted loop playsinline onclick="openModal(this)">
+                            <source src="recent_works/cyrene.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
                     <a href="https://www.tiktok.com/@cynhyo/video/7571472539432586503" target="_blank" class="video-tiktok-bottom">
-                        Click here to view on TikTok
+                        <span>cyrene.mp4 // TikTok</span>
                     </a>
                 </div>
 
                 <div class="video-container">
-                    <video id="recentWork2" autoplay muted loop playsinline onclick="openModal(this)">
-                        <source src="recent_works/rezedenji.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <div class="video-horizontal">
+                        <video id="recentWork2" autoplay muted loop playsinline onclick="openModal(this)">
+                            <source src="recent_works/rezedenji.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
                     <a href="https://www.tiktok.com/@cynhyo/video/7568189301809401106" target="_blank" class="video-tiktok-bottom">
-                        Click here to view on TikTok
+                        <span>rezedenji.mp4 // TikTok</span>
                     </a>
                 </div>
                 
                 <div class="video-container">
-                    <video id="recentWork3" autoplay muted loop playsinline onclick="openModal(this)">
-                        <source src="recent_works/dispatch.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+                    <div class="video-horizontal">
+                        <video id="recentWork3" autoplay muted loop playsinline onclick="openModal(this)">
+                            <source src="recent_works/dispatch.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
                     <a href="https://www.tiktok.com/@cynhyo/video/7575974752636947720" target="_blank" class="video-tiktok-bottom">
-                        Click here to view on TikTok
+                        <span>dispatch.mp4 // TikTok</span>
                     </a>
                 </div>
             </div>
             
-            <p class="section-subtitle">coding projects</p>
+            <p class="section-subtitle">>> CODING PROJECTS <<</p>
             
             <div class="project-grid">
                 
@@ -695,32 +868,32 @@
             </div>
         </section>
         
-        <section class="section animated-section">
+        <section class="section animated-section" data-animation-delay="0.3">
             <h2 class="section-title">Socials</h2>
             <div class="links-grid">
                 <a href="https://www.tiktok.com/@cynhyo" target="_blank" class="link-card tiktok">
                     <h3>TikTok</h3>
-                    <p>@cynhyo</p>
+                    <p>@cynhyo // Target: Social_Media_Clip</p>
                 </a>
                 <a href="https://discord.gg/ERmducCwvK" target="_blank" class="link-card discord">
                     <h3>Discord</h3>
-                    <p>Join Server</p>
+                    <p>Join Server // Target: Community_Hub</p>
                 </a>
                 <a href="https://x.com/cyntsch" target="_blank" class="link-card twitter">
                     <h3>Twitter</h3>
-                    <p>@cyntsch</p>
+                    <p>@cyntsch // Target: Micro_Blog</p>
                 </a>
                 <a href="https://github.com/laincyn" target="_blank" class="link-card github">
                     <h3>GitHub</h3>
-                    <p>@laincyn</p>
+                    <p>@laincyn // Target: Source_Code_Repo</p>
                 </a>
             </div>
         </section>
         
         </div>
 
-    <div id="videoModal" class="modal">
-        <span class="close" onclick="closeModal()">&times;</span>
+    <div id="videoModal">
+        <span class="close" onclick="closeModal()">[X]</span>
         <div class="modal-content">
             <video id="modalVideo" controls loop preload="auto">
                 <source src="" type="video/mp4"> 
@@ -728,6 +901,14 @@
             </video>
         </div>
     </div>
+    
+    <button id="backToTop" onclick="scrollToTop()">^</button>
+    
+    <footer>
+        <div class="footer-log">
+            <p>// LOG: Connection status: Encrypted and Stable. Protocol: HTTP/2.0.</p>
+        </div>
+    </footer>
 
     <script>
         // --- Element Selection ---
@@ -740,18 +921,22 @@
         const bgMusic = document.getElementById('backgroundMusic');
         const landingScreen = document.getElementById('landingScreen');
         const mainContent = document.getElementById('mainContent');
-        const mainBackground = document.getElementById('mainBackground');
         const dateTimeElement = document.getElementById('dateTime');
         const volumeControl = document.getElementById('volumeControl');
         const volumeBars = document.querySelectorAll('.volume-bar');
+        const progressBar = document.getElementById('progressBar');
+        const backToTopButton = document.getElementById('backToTop');
+        const mainTitle = document.getElementById('mainTitle');
+        const particlesContainer = document.getElementById('matrixParticles');
         
-        // --- Global Variables ---
-        const maxMusicVolume = 0.65; 
-        let fadeIntervalId;
+        // --- Global Variables & Constants (MODIFIED) ---
+        const maxMusicVolume = 0.65; // Max actual volume for the <audio> element (relative to 1.0)
+        const defaultVolumeFraction = 0.6; // 60% of the total volume range (0 to 1) requested by user
         let isDragging = false;
         let currentPlayingVideo = null; 
-        
-        // --- Clock Functions ---
+        const videosToPlay = [inspoVideo, recentWork1, recentWork2, recentWork3];
+
+        // --- 1. CLOCK & UI FUNCTIONS ---
 
         function updateDateTime() {
             const now = new Date();
@@ -764,46 +949,163 @@
 
             const dateString = now.toLocaleDateString('en-US', dateOptions);
 
-            dateTimeElement.textContent = `${timeString} | ${dateString}`;
+            dateTimeElement.textContent = `[ ${timeString} ] - [ ${dateString} ]`;
         }
-
         updateDateTime();
         setInterval(updateDateTime, 1000); 
 
-        // --- Volume Control Logic ---
+        // --- 2. SCROLL LOGIC (Progress Bar and Back to Top) ---
+        
+        function updateScroll() {
+            // Progress Bar
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (window.scrollY / totalHeight) * 100;
+            progressBar.style.width = scrollPercent + "%";
+            
+            // Back to Top Visibility
+            if (window.scrollY > 400) {
+                backToTopButton.style.display = 'flex';
+                backToTopButton.style.opacity = 1;
+            } else {
+                backToTopButton.style.opacity = 0;
+                setTimeout(() => {
+                     if(window.scrollY < 400) backToTopButton.style.display = 'none';
+                }, 300);
+            }
+            
+            // Scroll Reveal
+            checkSectionsVisibility();
+        }
+
+        window.addEventListener('scroll', updateScroll);
+        window.addEventListener('resize', updateScroll);
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // --- 3. SCROLL REVEAL ANIMATION (Staggered) ---
+
+        const sections = document.querySelectorAll('.section');
+        const observerOptions = {
+            root: null, 
+            rootMargin: '0px', 
+            threshold: 0.1 
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const section = entry.target;
+                    const delay = parseFloat(section.getAttribute('data-animation-delay')) || 0;
+                    section.style.transitionDelay = `${delay}s`;
+                    section.classList.add('is-visible');
+                    observer.unobserve(section);
+                }
+            });
+        }, observerOptions);
+
+        function checkSectionsVisibility() {
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+        
+        // --- 4. GLITCH EFFECT LOGIC ---
+        
+        function applyGlitch(element) {
+            if (Math.random() < 0.6) {
+                element.classList.add('glitch-flicker');
+            }
+            
+            const duration = 100 + Math.random() * 200; 
+            setTimeout(() => {
+                element.classList.remove('glitch-flicker');
+            }, duration);
+        }
+
+        function periodicGlitch() {
+            applyGlitch(mainTitle);
+            
+            const allTitles = document.querySelectorAll('.section-title');
+            if (allTitles.length > 0) {
+                const randomTitle = allTitles[Math.floor(Math.random() * allTitles.length)];
+                applyGlitch(randomTitle);
+            }
+
+            const nextGlitchTime = 3000 + Math.random() * 7000;
+            setTimeout(periodicGlitch, nextGlitchTime);
+        }
+        
+        // --- 5. MATRIX PARTICLE GENERATOR ---
+
+        function generateParticles(count) {
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            particlesContainer.innerHTML = ''; 
+
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                const x1 = Math.random() * viewportWidth;
+                const y1 = Math.random() * viewportHeight;
+                const x2 = Math.random() * viewportWidth;
+                const y2 = y1 + viewportHeight / 2; 
+
+                particle.style.setProperty('--x1', `${x1}px`);
+                particle.style.setProperty('--y1', `${y1}px`);
+                particle.style.setProperty('--x2', `${x2}px`);
+                particle.style.setProperty('--y2', `${y2}px`);
+                particle.style.animationDelay = `${Math.random() * 15}s`; 
+                particle.style.left = `${x1}px`;
+                particle.style.top = `${y1}px`;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        // --- 6. VOLUME CONTROL LOGIC (Instantaneous drag) ---
 
         function updateVolumeBars(volumeFraction) {
-            const activeBars = Math.round(volumeFraction * volumeBars.length);
+            const totalBars = volumeBars.length;
+            const activeBars = Math.round(volumeFraction * totalBars); 
 
             volumeBars.forEach((bar, index) => {
-                if (index < activeBars) {
-                    bar.classList.add('active');
-                    bar.style.opacity = 1;
-                    const barFraction = (index + 1) / volumeBars.length;
-                    bar.style.width = `${60 * (0.8 + 0.2 * barFraction)}%`; 
+                const isActive = index < activeBars;
+                bar.classList.toggle('active', isActive);
+
+                // Style the bars dynamically based on active state
+                const baseColor = isActive ? 'var(--color-red)' : 'rgba(255, 255, 255, 0.1)';
+                const glow = isActive ? `0 0 5px var(--color-red)` : 'none';
+                
+                // Final bar (index 9) gets the bright white effect
+                if (index === totalBars - 1 && isActive) {
+                    bar.style.background = 'white';
+                    bar.style.boxShadow = '0 0 10px white, 0 0 20px rgba(255, 255, 255, 0.5)';
                 } else {
-                    bar.classList.remove('active');
-                    bar.style.opacity = 0.3;
-                    bar.style.width = '60%';
+                     bar.style.background = baseColor;
+                     bar.style.boxShadow = glow;
                 }
             });
         }
 
+
         function handleDrag(event) {
             if (!isDragging) return;
-
             const clientY = event.touches ? event.touches[0].clientY : event.clientY;
             const rect = volumeControl.getBoundingClientRect();
             
+            // Calculate volumeFraction (0 to 1) based on drag position
             let y = clientY - rect.top;
-            let volumeFraction = 1 - (y / rect.height); 
-            
+            let volumeFraction = 1 - (y / rect.height); // 1 at top, 0 at bottom
             volumeFraction = Math.max(0, Math.min(1, volumeFraction));
             
-            bgMusic.volume = volumeFraction * maxMusicVolume;
-
-            updateVolumeBars(volumeFraction);
+            // Set actual audio volume (relative to maxMusicVolume, 0.65)
+            bgMusic.volume = volumeFraction * maxMusicVolume; 
             
+            // Update visual bars
+            updateVolumeBars(volumeFraction);
             event.preventDefault(); 
         }
 
@@ -821,77 +1123,13 @@
         volumeControl.addEventListener('mousedown', startDrag);
         document.addEventListener('mousemove', handleDrag);
         document.addEventListener('mouseup', stopDrag);
-        volumeControl.addEventListener('touchstart', (e) => startDrag(e));
-        document.addEventListener('touchmove', handleDrag);
+        volumeControl.addEventListener('touchstart', (e) => startDrag(e), { passive: false });
+        document.addEventListener('touchmove', handleDrag, { passive: false });
         document.addEventListener('touchend', stopDrag);
 
-
-        // --- Background Music Fading Functions ---
-
-        function fadeOutMusic() {
-            clearInterval(fadeIntervalId); 
-            const fadeInterval = 50; 
-            const fadeTime = 700; 
-            const steps = fadeTime / fadeInterval;
-            const volumeDecrease = bgMusic.volume / steps;
-            
-            if (bgMusic.volume > 0) {
-                fadeIntervalId = setInterval(() => {
-                    if (bgMusic.volume > volumeDecrease) {
-                        bgMusic.volume -= volumeDecrease;
-                        updateVolumeBars(bgMusic.volume / maxMusicVolume);
-                    } else {
-                        bgMusic.volume = 0;
-                        bgMusic.pause();
-                        updateVolumeBars(0);
-                        clearInterval(fadeIntervalId);
-                    }
-                }, fadeInterval);
-            }
-        }
-
-        function fadeInMusic() {
-            clearInterval(fadeIntervalId); 
-            const fadeInterval = 50; 
-            const fadeTime = 1000; 
-            const steps = fadeTime / fadeInterval;
-            const volumeIncrease = maxMusicVolume / steps;
-            
-            bgMusic.play().catch(e => console.error("Audio play failed on fade in:", e));
-            
-            fadeIntervalId = setInterval(() => {
-                if (bgMusic.volume < maxMusicVolume - volumeIncrease) {
-                    bgMusic.volume += volumeIncrease;
-                    updateVolumeBars(bgMusic.volume / maxMusicVolume);
-                } else {
-                    bgMusic.volume = maxMusicVolume;
-                    updateVolumeBars(1.0);
-                    clearInterval(fadeIntervalId);
-                }
-            }, fadeInterval);
-        }
-
-        bgMusic.addEventListener('ended', function() {
-            this.currentTime = 0; 
-            this.play().catch(e => console.error("Audio replay failed on loop:", e));
-        });
-
-        // --- Staggered Entrance Animation Function (NEW) ---
-
-        function staggerEntranceAnimations() {
-            // Select all elements that have the 'animated-section' class
-            const sections = document.querySelectorAll('#mainContent .animated-section');
-            sections.forEach((section, index) => {
-                // Apply a sequential delay to each section
-                section.style.animationDelay = `${0.1 * index}s`; 
-            });
-        }
-        
-        // --- Video Playback Helpers ---
+        // --- 7. CORE SITE TRANSITION LOGIC (Modified for 60% start) ---
         
         function tryPlayingAllVideos() {
-            const videosToPlay = [inspoVideo, recentWork1, recentWork2, recentWork3];
-            
             videosToPlay.forEach(video => {
                 if(video) { 
                     video.play().catch(e => {
@@ -902,29 +1140,21 @@
         }
 
 
-        // --- Core Site Transition Logic ---
-        
         function enterSite() {
-            // 1. Audio setup
-            bgMusic.volume = 0;
-            bgMusic.currentTime = 70; 
-            updateVolumeBars(1.0); 
-
-            bgMusic.play().then(() => {
-                fadeInMusic(); 
-            }).catch(e => {
-                console.error("Audio play failed on site entry click:", e);
-            });
+            // 1. Audio setup: Start at 60% of the volume range
+            bgMusic.volume = defaultVolumeFraction * maxMusicVolume; // Set initial volume (0.6 * 0.65)
+            bgMusic.currentTime = 0; // MODIFIED: Start music from 0:00
+            bgMusic.play().catch(e => console.error("Audio play failed on site entry click:", e));
 
             // 2. Visual Transitions
             landingScreen.classList.add('fade-out-landing');
-            mainBackground.classList.add('active');
-            
+            particlesContainer.classList.add('active'); 
+
             setTimeout(() => {
                 mainContent.classList.add('fade-in-content');
                 tryPlayingAllVideos(); 
-                // IMPORTANT: Call the stagger function after adding the fade-in class
-                staggerEntranceAnimations(); 
+                checkSectionsVisibility(); 
+                periodicGlitch(); 
             }, 500); 
             
             setTimeout(() => {
@@ -932,18 +1162,26 @@
                 landingScreen.remove(); 
             }, 1500);
         }
+        
+        window.onload = () => {
+             generateParticles(100); 
+             updateScroll(); 
+             // Set the initial 60% volume state on load for the visual bars
+             updateVolumeBars(defaultVolumeFraction);
+        }
 
-        // --- Modal Functions (MODIFIED) ---
+        // --- 8. MODAL FUNCTIONS ---
         
         function openModal(videoElement) {
-            fadeOutMusic(); 
+            // Stop background music temporarily
+            bgMusic.pause();
             
             currentPlayingVideo = videoElement; 
             videoElement.pause(); 
             
             modalVideo.querySelector('source').src = videoElement.querySelector('source').src;
             modalVideo.load(); 
-            // MODIFIED: Force the modal video to start at 0:00
+            // Ensures the modal video starts at the beginning (0:00)
             modalVideo.currentTime = 0; 
             modalVideo.muted = false; 
             
@@ -955,8 +1193,7 @@
             modalVideo.pause();
             
             if (currentPlayingVideo) {
-                // MODIFIED: Removed the line currentPlayingVideo.currentTime = modalVideo.currentTime;
-                // This ensures the background video resumes from its current position, maintaining its loop state.
+                // Background video resumes its loop/current time
                 currentPlayingVideo.play();
             }
             
@@ -965,7 +1202,8 @@
             modalVideo.querySelector('source').src = "";
             modalVideo.load();
 
-            fadeInMusic(); 
+            // Resume background music at its current volume setting
+            bgMusic.play().catch(e => console.error("Audio play failed on modal close:", e));
         }
 
         document.addEventListener('keydown', function(event) {
