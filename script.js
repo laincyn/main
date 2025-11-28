@@ -21,8 +21,9 @@ let currentPlayingVideo = null;
 // --- CAROUSEL 1: EDITS LOG DATA ---
 const editsData = [
     { id: 'cyrene', src: 'recent_works/cyrene.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7571472539432586503', title: 'cyrene.mp4 // TikTok' },
-    { id: 'rezedenji', src: 'recent_works/rezedenji.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7568189301809401106', title: 'rezedenji.mp4 // TikTok' },
+    { id: 'confession', src: 'recent_works/confession.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7577174486793866503', title: 'confession.mp4 // TikTok' },
     { id: 'dispatch', src: 'recent_works/dispatch.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7575974752636947720', title: 'dispatch.mp4 // TikTok' },
+    { id: 'rezedenji', src: 'recent_works/rezedenji.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7568189301809401106', title: 'rezedenji.mp4 // TikTok' },
 ];
 
 // --- CAROUSEL 2: INSPO DATA ---
