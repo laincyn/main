@@ -416,11 +416,6 @@ h1 {
     transition: transform 0.3s ease, box-shadow 0.5s ease;
 }
 
-/* PRESERVE INAPSO SIZE (User Request) */
-#inspoSection .video-container {
-    width: 450px; 
-}
-
 /* New aspect ratio container for 16:9 (Horizontal) videos */
 .video-horizontal {
     width: 100%;
@@ -549,7 +544,7 @@ h1 {
 
 
 /* ------------------------------------------------------------------- */
-/* --- EDITS LOG CAROUSEL STYLES (REVISED FOR VISIBLE ANIMATION) --- */
+/* --- EDITS & INSPO CAROUSEL STYLES (POLISHED & 3D) --- */
 /* ------------------------------------------------------------------- */
 
 .edits-carousel-container {
@@ -558,14 +553,19 @@ h1 {
     position: relative;
     overflow: visible; 
     padding: 50px 50px; 
+    /* Add perspective for 3D effect */
+    perspective: 1000px; 
 }
 
-.edits-carousel-wrapper {
+/* Common wrapper styles */
+.edits-carousel-wrapper, 
+#inspoCarouselWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 20px; 
     will-change: transform;
+    transform-style: preserve-3d; /* Enable 3D space */
 }
 
 .video-card {
@@ -575,44 +575,61 @@ h1 {
     transform-origin: center center;
     will-change: transform, opacity, filter;
     
-    /* The transition must be applied here to the card element */
-    transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), 
-                opacity 0.4s ease,
+    /* Smoother transition */
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), 
+                opacity 0.6s ease,
                 filter 0.6s ease,
-                box-shadow 0.6s ease;
+                box-shadow 0.4s ease;
 }
 
-/* Side Cards: Scale down, fade, and apply a small horizontal shift for motion illusion */
+/* --- SIDE CARDS: CREATIVE EFFECTS --- */
 .video-card[data-position="side"] {
     opacity: 0.4;
-    transform: scale(0.7); /* Base side scale */
-    filter: brightness(0.7);
+    filter: brightness(0.5) grayscale(80%) blur(1px); /* Dark, desaturated, slightly blurred */
     pointer-events: none;
     box-shadow: none;
     z-index: 5;
+    /* Base scale for side cards */
 }
 
-/* Specific transform for left card (Card 1) */
+/* --- Edits Wrapper 3D Rotation --- */
 #editsCarouselWrapper .video-card:first-child[data-position="side"] {
-     /* Combine scale and a slight left translation to emphasize movement */
-     transform: scale(0.7) translateX(-15%); 
+     /* Push left and rotate inward */
+     transform: scale(0.8) translateX(-30%) rotateY(25deg); 
 }
-/* Specific transform for right card (Card 3) */
 #editsCarouselWrapper .video-card:last-child[data-position="side"] {
-     /* Combine scale and a slight right translation to emphasize movement */
-     transform: scale(0.7) translateX(15%); 
+     /* Push right and rotate inward */
+     transform: scale(0.8) translateX(30%) rotateY(-25deg); 
 }
 
-/* Center Card: Full scale, full opacity, zero translation */
+/* --- Inspo Wrapper 3D Rotation --- */
+#inspoCarouselWrapper .video-card:first-child[data-position="side"] {
+    transform: scale(0.8) translateX(-30%) rotateY(25deg); 
+}
+#inspoCarouselWrapper .video-card:last-child[data-position="side"] {
+    transform: scale(0.8) translateX(30%) rotateY(-25deg); 
+}
+
+/* --- CENTER CARD: FOCUSED --- */
 .video-card[data-position="center"] {
     opacity: 1;
-    /* Full scale, zero translation */
-    transform: scale(1.5) translateX(0); 
-    filter: brightness(1);
+    filter: brightness(1) grayscale(0%) blur(0px); /* Crystal clear */
+    transform: scale(1.5) translateX(0) rotateY(0deg) translateZ(50px); /* Pop out forward */
     pointer-events: auto;
     z-index: 10;
-    box-shadow: 0 0 20px rgba(255, 107, 107, 0.8), 0 0 40px var(--color-red);
+    /* Default: Minimal glowing border, no massive shine yet */
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.1); 
+    border: 1px solid rgba(255, 107, 107, 0.3);
 }
+
+/* --- CENTER CARD: HOVER GLOW (User Request) --- */
+.video-card[data-position="center"]:hover {
+    /* The intense neon glow only appears on hover */
+    box-shadow: 0 0 20px rgba(255, 107, 107, 0.8), 0 0 50px var(--color-red);
+    border-color: var(--color-red);
+    z-index: 11; /* Ensure it stays on top */
+}
+
 
 /* Video Container inside card reset (prevents double scaling issues) */
 .video-card .video-container {
@@ -653,8 +670,8 @@ h1 {
     box-shadow: 0 0 15px var(--color-red);
 }
 
-#prevEdit { left: 0; }
-#nextEdit { right: 0; }
+#prevEdit, #prevInspo { left: 0; }
+#nextEdit, #nextInspo { right: 0; }
 
 /* ------------------------------------------------------------------- */
 /* --- LINKS (SOCIALS) --- */
@@ -903,11 +920,6 @@ footer {
         height: 120px;
     }
     
-    /* Inspo video size for mobile (Preserved) */
-    #inspoSection .video-container {
-        width: 90%; 
-    }
-    
     .video-container {
         width: 90%; 
     }
@@ -926,6 +938,7 @@ footer {
     /* Edits Carousel Mobile Adjustments */
     .edits-carousel-container {
         padding: 30px 5px; /* Reduced padding for mobile, but still preserves space */
+        perspective: none; /* Flatten 3D for mobile performance/layout */
     }
     
     .video-card {
@@ -938,20 +951,23 @@ footer {
         font-size: 1rem;
     }
 
-    #prevEdit { left: 5px; }
-    #nextEdit { right: 5px; }
+    #prevEdit, #prevInspo { left: 5px; }
+    #nextEdit, #nextInspo { right: 5px; }
     
     /* Adjust scale for mobile to prevent massive overflow */
     .video-card[data-position="center"] {
-        transform: scale(1.3) translateX(0); 
+        transform: scale(1.3) translateX(0) translateZ(0); 
     }
     
-    /* Apply mobile shift for side cards */
-    #editsCarouselWrapper .video-card:first-child[data-position="side"] {
-         transform: scale(0.7) translateX(-15%); 
+    /* Apply mobile shift for side cards (Both Carousels) */
+    /* Remove the rotation for mobile to keep it simple */
+    #editsCarouselWrapper .video-card:first-child[data-position="side"],
+    #inspoCarouselWrapper .video-card:first-child[data-position="side"] {
+         transform: scale(0.7) translateX(-15%) rotateY(0deg); 
     }
-    #editsCarouselWrapper .video-card:last-child[data-position="side"] {
-         transform: scale(0.7) translateX(15%); 
+    #editsCarouselWrapper .video-card:last-child[data-position="side"],
+    #inspoCarouselWrapper .video-card:last-child[data-position="side"] {
+         transform: scale(0.7) translateX(15%) rotateY(0deg); 
     }
     
     /* Skills Mobile Adjustments */

@@ -1,5 +1,4 @@
 // --- Element Selection ---
-const inspoVideo = document.getElementById('inspoVideo');
 const bgMusic = document.getElementById('backgroundMusic');
 const landingScreen = document.getElementById('landingScreen');
 const mainContent = document.getElementById('mainContent');
@@ -19,91 +18,109 @@ const defaultVolumeFraction = 0.6;
 let isDragging = false;
 let currentPlayingVideo = null; 
 
-// CAROUSEL DATA 
+// --- CAROUSEL 1: EDITS LOG DATA ---
 const editsData = [
     { id: 'cyrene', src: 'recent_works/cyrene.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7571472539432586503', title: 'cyrene.mp4 // TikTok' },
     { id: 'rezedenji', src: 'recent_works/rezedenji.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7568189301809401106', title: 'rezedenji.mp4 // TikTok' },
     { id: 'dispatch', src: 'recent_works/dispatch.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7575974752636947720', title: 'dispatch.mp4 // TikTok' },
-    // Add more videos here if needed for the loop!
 ];
 
-const editsCarouselWrapper = document.getElementById('editsCarouselWrapper');
-const visibleCards = Array.from(editsCarouselWrapper.children); // Static array of the 3 DOM elements
-let currentDataIndex = 0; // Index of the video data currently displayed in the CENTER card.
+// --- CAROUSEL 2: INSPO DATA ---
+const inspoData = [
+    { id: 'nisekoi', src: 'inspo/nisekoi.mp4', link: 'https://www.tiktok.com/@artori.a/video/7571383570418257183', title: 'nisekoi.mp4 // TikTok' },
+    { id: 'kaguya', src: 'inspo/kaguya1.mp4', link: 'https://www.tiktok.com/@dcomics0/video/7547897732103458062', title: 'kaguya1.mp4 // TikTok' },
+    { id: 'kaoruko', src: 'inspo/kaoruko.mp4', link: 'https://www.tiktok.com/@jpegezer/video/7558051207957318919', title: 'kaoruko.mp4 // TikTok' },
+    { id: 'slowburn', src: 'inspo/slowburn.mp4', link: 'https://www.tiktok.com/@ume4vrr/video/7530769478297193741', title: 'slowburn.mp4 // TikTok' },
+    { id: 'fujino', src: 'inspo/fujino.mp4', link: 'https://www.tiktok.com/@.little.plantt/video/7551721368635690271', title: 'fujino.mp4 // TikTok' }
+];
 
-// --- CAROUSEL FUNCTIONS (IMPLEMENTED SMOOTHNESS AND LOOPING LOGIC) ---
+// Elements for Edits Carousel
+const editsCarouselWrapper = document.getElementById('editsCarouselWrapper');
+const visibleEditCards = Array.from(editsCarouselWrapper.children); 
+let currentEditIndex = 0; 
+
+// Elements for Inspo Carousel
+const inspoCarouselWrapper = document.getElementById('inspoCarouselWrapper');
+const visibleInspoCards = Array.from(inspoCarouselWrapper.children);
+let currentInspoIndex = 1; // Start at index 1 (Kaguya) as requested
+
+// --- CAROUSEL FUNCTIONS (GENERIC LOGIC) ---
 
 /**
- * Updates the content (src/link/title) and the visual state (data-position) 
- * of the three visible video cards based on the currentDataIndex.
+ * Update Carousel Function (Used for both carousels)
  */
-function updateCarouselContent() {
-    const totalData = editsData.length;
+function updateCarousel(wrapper, visibleCards, dataArray, currentIndex) {
+    const totalData = dataArray.length;
     
     // Map the current center index to the indices for left and right
-    // Use modular arithmetic for infinite looping
-    const leftDataIndex = (currentDataIndex - 1 + totalData) % totalData;
-    const rightDataIndex = (currentDataIndex + 1) % totalData;
+    const leftDataIndex = (currentIndex - 1 + totalData) % totalData;
+    const rightDataIndex = (currentIndex + 1) % totalData;
     
     const cardMap = [
         { card: visibleCards[0], dataIndex: leftDataIndex, position: 'side' },
-        { card: visibleCards[1], dataIndex: currentDataIndex, position: 'center' },
+        { card: visibleCards[1], dataIndex: currentIndex, position: 'center' },
         { card: visibleCards[2], dataIndex: rightDataIndex, position: 'side' }
     ];
 
-    // Update content and position attributes
     cardMap.forEach(item => {
-        const data = editsData[item.dataIndex];
+        const data = dataArray[item.dataIndex];
         const videoElement = item.card.querySelector('video');
         const linkElement = item.card.querySelector('.video-tiktok-bottom');
         const sourceElement = videoElement.querySelector('source');
 
-        // 1. Update data/content (Virtual DOM approach)
-        sourceElement.src = data.src;
-        videoElement.load(); // Reload video with new source
+        // Update content if source changed
+        // We only reload if the source actually changes to avoid flickering the playing video
+        const currentSrc = sourceElement.getAttribute('src');
+        if (currentSrc !== data.src) {
+            sourceElement.src = data.src;
+            videoElement.load(); 
+        }
 
         linkElement.href = data.link;
         linkElement.querySelector('span').textContent = data.title;
         
-        // 2. Update visual state (CSS handles the smooth transition)
+        // Update visual state
         item.card.setAttribute('data-position', item.position);
         
-        // 3. Control playback
-        if (item.position === 'center') {
-            videoElement.play().catch(e => console.error("Video play failed:", e));
-        } else {
-            videoElement.pause();
-            videoElement.currentTime = 0; // Reset side videos
-        }
+        // --- UPDATED PLAYBACK LOGIC ---
+        // Play ALL videos (Center AND Sides)
+        // Ensure they are muted so it's not a noise mess
+        videoElement.muted = true; 
+        videoElement.play().catch(e => {
+            // Silence "Autoplay failed" errors common in browsers
+            if (e.name !== 'NotAllowedError') console.log("Background play restriction:", e);
+        });
     });
-    
-    // Ensure all videos play after being loaded/updated to prevent blank frames
-    tryPlayingAllVideos();
 }
 
-
-/**
- * Rotates the carousel data index and triggers the content update.
- * @param {number} direction - 1 for right (next), -1 for left (previous).
- */
+// Wrapper function for Edits Log
 function rotateCarousel(direction) {
-    const totalData = editsData.length;
-    
-    // Disable buttons temporarily to prevent rapid clicks during animation
     document.getElementById('prevEdit').disabled = true;
     document.getElementById('nextEdit').disabled = true;
 
-    // Calculate new center index (using modular arithmetic for looping)
-    currentDataIndex = (currentDataIndex + direction + totalData) % totalData;
+    currentEditIndex = (currentEditIndex + direction + editsData.length) % editsData.length;
     
-    // Update the visible cards' content/state. The CSS transition handles the smooth slide/scale.
-    updateCarouselContent();
+    updateCarousel(editsCarouselWrapper, visibleEditCards, editsData, currentEditIndex);
     
-    // Re-enable buttons after transition time
     setTimeout(() => {
         document.getElementById('prevEdit').disabled = false;
         document.getElementById('nextEdit').disabled = false;
-    }, 600); // Matches the CSS transition time
+    }, 600); 
+}
+
+// Wrapper function for Inspo Log
+function rotateInspoCarousel(direction) {
+    document.getElementById('prevInspo').disabled = true;
+    document.getElementById('nextInspo').disabled = true;
+
+    currentInspoIndex = (currentInspoIndex + direction + inspoData.length) % inspoData.length;
+    
+    updateCarousel(inspoCarouselWrapper, visibleInspoCards, inspoData, currentInspoIndex);
+    
+    setTimeout(() => {
+        document.getElementById('prevInspo').disabled = false;
+        document.getElementById('nextInspo').disabled = false;
+    }, 600); 
 }
 
 // --- 1. CLOCK & UI FUNCTIONS ---
@@ -172,7 +189,6 @@ const observer = new IntersectionObserver((entries, observer) => {
             let newDelay = 0.0;
             if (section.querySelector('.section-title')) {
                  const titleText = section.querySelector('.section-title').textContent.trim();
-                 // Updated delay map to include Skills & Stack
                  const delayMap = {
                     'About Me': 0.0,
                     'Skills & Stack': 0.1,
@@ -316,10 +332,15 @@ document.addEventListener('touchend', stopDrag);
 // --- 7. CORE SITE TRANSITION LOGIC ---
 
 function tryPlayingAllVideos() {
-    // Include Inspo video
-    const videosToPlay = [inspoVideo]; 
-    // Include the three visible carousel videos
-    visibleCards.forEach(card => {
+    const videosToPlay = [];
+    
+    // Add Edits Carousel Videos
+    visibleEditCards.forEach(card => {
+        videosToPlay.push(card.querySelector('video'));
+    });
+
+    // Add Inspo Carousel Videos
+    visibleInspoCards.forEach(card => {
         videosToPlay.push(card.querySelector('video'));
     });
 
@@ -329,7 +350,7 @@ function tryPlayingAllVideos() {
             if (mainContent.classList.contains('fade-in-content')) {
                 video.play().catch(e => {
                     if (e.name !== 'NotAllowedError') {
-                         console.error(`Video autoplay failed for ${video.id || 'carousel'}:`, e);
+                         console.error(`Video autoplay failed:`, e);
                     }
                 });
             }
@@ -367,34 +388,30 @@ window.onload = () => {
      // Set the initial 60% volume state on load for the visual bars
      updateVolumeBars(defaultVolumeFraction);
      
-     // Initial setup for the carousel
-     updateCarouselContent(); 
+     // Initial setup for carousels
+     updateCarousel(editsCarouselWrapper, visibleEditCards, editsData, currentEditIndex); 
+     updateCarousel(inspoCarouselWrapper, visibleInspoCards, inspoData, currentInspoIndex); 
 }
 
 // --- 8. MODAL FUNCTIONS ---
 
 function openModal(videoElement) {
-    /* CHANGED: Start: Pause, reset time, and play the clicked video before opening the modal. */
     videoElement.pause();
     videoElement.currentTime = 0; 
     videoElement.play().catch(e => {
-        // Safely ignore promise rejection if autoplay is blocked
         if (e.name !== 'NotAllowedError') {
              console.error(`Video play failed on click (reset):`, e);
         }
     });
-    /* CHANGED: End */
     
     // Stop background music temporarily
     bgMusic.pause();
     
     currentPlayingVideo = videoElement; 
-    // videoElement.pause(); // Removed, as it is done above
     
     modalVideo.querySelector('source').src = videoElement.querySelector('source').src;
     modalVideo.load(); 
-    // Since we reset the background video to 0, the modal should also start at 0
-    modalVideo.currentTime = 0; // Changed from original logic to 0 for consistency
+    modalVideo.currentTime = 0; 
     modalVideo.muted = false; 
     
     modal.style.display = "flex"; 
@@ -405,8 +422,7 @@ function closeModal() {
     modalVideo.pause();
     
     if (currentPlayingVideo) {
-        // Background video resumes its loop/current time
-        currentPlayingVideo.currentTime = modalVideo.currentTime; // Sync time back
+        currentPlayingVideo.currentTime = modalVideo.currentTime; 
         currentPlayingVideo.play();
     }
     
@@ -422,13 +438,5 @@ function closeModal() {
 document.addEventListener('keydown', function(event) {
     if (event.key === "Escape" && modal.style.display === "flex") {
         closeModal();
-    }
-    // Accessibility: Add keyboard navigation for carousel
-    if (mainContent.classList.contains('fade-in-content')) {
-         if (event.key === "ArrowRight") {
-            document.getElementById('nextEdit').click();
-         } else if (event.key === "ArrowLeft") {
-            document.getElementById('prevEdit').click();
-         }
     }
 });

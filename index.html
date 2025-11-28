@@ -153,18 +153,60 @@
         
         <section class="section animated-section" id="inspoSection" data-animation-delay="0.3">
             <h2 class="section-title">Inspo</h2>
-            <div class="video-grid">
-                <div class="video-container">
-                    <div class="video-horizontal">
-                        <video id="inspoVideo" autoplay muted loop playsinline onclick="openModal(this)">
-                            <source src="inspo/kaguya1.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+            
+            <div class="edits-carousel-container">
+                <div class="edits-carousel-wrapper" id="inspoCarouselWrapper">
+                    
+                    <div class="video-card" id="inspoCard1" data-position="side">
+                        <div class="video-container">
+                            <div class="video-horizontal">
+                                <video autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <a href="#" target="_blank" class="video-tiktok-bottom">
+                                <span></span>
+                            </a>
+                        </div>
                     </div>
-                    <a href="https://www.tiktok.com/@dcomics0/video/7547897732103458062" target="_blank" class="video-tiktok-bottom">
-                        <span>Inspo // kaguya1.mp4</span>
-                    </a>
+                    
+                    <div class="video-card" id="inspoCard2" data-position="center">
+                        <div class="video-container">
+                            <div class="video-horizontal">
+                                <video autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <a href="#" target="_blank" class="video-tiktok-bottom">
+                                <span></span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="video-card" id="inspoCard3" data-position="side">
+                        <div class="video-container">
+                            <div class="video-horizontal">
+                                <video autoplay muted loop playsinline onclick="openModal(this)">
+                                    <source src="" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                            <a href="#" target="_blank" class="video-tiktok-bottom">
+                                <span></span>
+                            </a>
+                        </div>
+                    </div>
+                    
                 </div>
+                
+                <button class="carousel-nav" id="prevInspo" onclick="rotateInspoCarousel(-1)" aria-label="Previous Inspo">
+                    <span style="font-size: 1.5rem; transform: translateX(-2px);">&lt;</span>
+                </button>
+                <button class="carousel-nav" id="nextInspo" onclick="rotateInspoCarousel(1)" aria-label="Next Inspo">
+                    <span style="font-size: 1.5rem; transform: translateX(2px);">&gt;</span>
+                </button>
             </div>
         </section>
         
