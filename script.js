@@ -12,25 +12,26 @@ const particlesContainer = document.getElementById('matrixParticles');
 const modal = document.getElementById('videoModal');
 const modalVideo = document.getElementById('modalVideo');
 
-// --- Global Variables & Constants ---
-const maxMusicVolume = 0.65; 
-const defaultVolumeFraction = 0.6;
+// - GLOBAL VARIABLES , CONSTANTS ARE PLACED HERE
+const maxMusicVolume = 1; 
+const defaultVolumeFraction = 0.2;
 let isDragging = false;
 let currentPlayingVideo = null; 
 
-// --- CAROUSEL 1: EDITS LOG DATA ---
+// CAROUSEL 1 . EDITS LOG DATA
 const editsData = [
-    { id: 'cyrene', src: 'recent_works/cyrene.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7571472539432586503', title: 'cyrene.mp4 // TikTok' },
     { id: 'confession', src: 'recent_works/confession.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7577174486793866503', title: 'confession.mp4 // TikTok' },
+    { id: 'cyrene', src: 'recent_works/cyrene.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7571472539432586503', title: 'cyrene.mp4 // TikTok' },
     { id: 'dispatch', src: 'recent_works/dispatch.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7575974752636947720', title: 'dispatch.mp4 // TikTok' },
     { id: 'rezedenji', src: 'recent_works/rezedenji.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7568189301809401106', title: 'rezedenji.mp4 // TikTok' },
+    { id: 'waguri', src: 'recent_works/waguri.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7564582679925083410', title: 'waguri.mp4 // TikTok' },
 ];
 
-// --- CAROUSEL 2: INSPO DATA ---
+// CAROUSEL 2: INSPO DATA
 const inspoData = [
     { id: 'nisekoi', src: 'inspo/nisekoi.mp4', link: 'https://www.tiktok.com/@artori.a/video/7571383570418257183', title: 'nisekoi.mp4 // TikTok' },
-    { id: 'kaguya', src: 'inspo/kaguya1.mp4', link: 'https://www.tiktok.com/@dcomics0/video/7547897732103458062', title: 'kaguya1.mp4 // TikTok' },
     { id: 'kaoruko', src: 'inspo/kaoruko.mp4', link: 'https://www.tiktok.com/@jpegezer/video/7558051207957318919', title: 'kaoruko.mp4 // TikTok' },
+    { id: 'kaguya', src: 'inspo/kaguya1.mp4', link: 'https://www.tiktok.com/@dcomics0/video/7547897732103458062', title: 'kaguya1.mp4 // TikTok' },
     { id: 'slowburn', src: 'inspo/slowburn.mp4', link: 'https://www.tiktok.com/@ume4vrr/video/7530769478297193741', title: 'slowburn.mp4 // TikTok' },
     { id: 'fujino', src: 'inspo/fujino.mp4', link: 'https://www.tiktok.com/@.little.plantt/video/7551721368635690271', title: 'fujino.mp4 // TikTok' }
 ];
@@ -45,15 +46,15 @@ const inspoCarouselWrapper = document.getElementById('inspoCarouselWrapper');
 const visibleInspoCards = Array.from(inspoCarouselWrapper.children);
 let currentInspoIndex = 1; // Start at index 1 (Kaguya) as requested
 
-// --- CAROUSEL FUNCTIONS (GENERIC LOGIC) ---
+// -> CAROUSEL FUNCTIONS (GENERIC LOGIC)
 
 /**
- * Update Carousel Function (Used for both carousels)
+ * CAROUSEL FUNCTION < [1], [2], [3]
  */
 function updateCarousel(wrapper, visibleCards, dataArray, currentIndex) {
     const totalData = dataArray.length;
     
-    // Map the current center index to the indices for left and right
+    // MAP CURRENT INDEX LEFT TO RIGHT [->][<-]
     const leftDataIndex = (currentIndex - 1 + totalData) % totalData;
     const rightDataIndex = (currentIndex + 1) % totalData;
     
@@ -69,8 +70,8 @@ function updateCarousel(wrapper, visibleCards, dataArray, currentIndex) {
         const linkElement = item.card.querySelector('.video-tiktok-bottom');
         const sourceElement = videoElement.querySelector('source');
 
-        // Update content if source changed
-        // We only reload if the source actually changes to avoid flickering the playing video
+        // updates content IF source changed
+        // RELOAD IF SOURCE, TO AVOID FLICKERING VID <----
         const currentSrc = sourceElement.getAttribute('src');
         if (currentSrc !== data.src) {
             sourceElement.src = data.src;
@@ -80,21 +81,24 @@ function updateCarousel(wrapper, visibleCards, dataArray, currentIndex) {
         linkElement.href = data.link;
         linkElement.querySelector('span').textContent = data.title;
         
-        // Update visual state
+        // VISUAL STATE
         item.card.setAttribute('data-position', item.position);
         
+        item.card.setAttribute('data-position', item.position)
+        videoElement.play().catch
+
+
         // --- UPDATED PLAYBACK LOGIC ---
         // Play ALL videos (Center AND Sides)
-        // Ensure they are muted so it's not a noise mess
         videoElement.muted = true; 
         videoElement.play().catch(e => {
-            // Silence "Autoplay failed" errors common in browsers
+            // IF AUTOPLAY FAIL
             if (e.name !== 'NotAllowedError') console.log("Background play restriction:", e);
         });
     });
 }
 
-// Wrapper function for Edits Log
+// WRAPPER FUNC for (EDITS LOG)
 function rotateCarousel(direction) {
     document.getElementById('prevEdit').disabled = true;
     document.getElementById('nextEdit').disabled = true;
@@ -109,7 +113,7 @@ function rotateCarousel(direction) {
     }, 600); 
 }
 
-// Wrapper function for Inspo Log
+// WRAPPER FUNC for (INSPO)
 function rotateInspoCarousel(direction) {
     document.getElementById('prevInspo').disabled = true;
     document.getElementById('nextInspo').disabled = true;
@@ -124,7 +128,7 @@ function rotateInspoCarousel(direction) {
     }, 600); 
 }
 
-// --- 1. CLOCK & UI FUNCTIONS ---
+// CLOCK AND UI FUNCTION LAYER
 
 function updateDateTime() {
     const now = new Date();
@@ -142,15 +146,15 @@ function updateDateTime() {
 updateDateTime();
 setInterval(updateDateTime, 1000); 
 
-// --- 2. SCROLL LOGIC (Progress Bar and Back to Top) ---
+// SCROLL LOGIC (top screen / progress logic)
 
 function updateScroll() {
-    // Progress Bar
+    // progress bar 
     const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
     const scrollPercent = (window.scrollY / totalHeight) * 100;
     progressBar.style.width = scrollPercent + "%";
     
-    // Back to Top Visibility
+    // BACK TO TOP? (click to work)
     if (window.scrollY > 400) {
         backToTopButton.style.display = 'flex';
         backToTopButton.style.opacity = 1;
@@ -161,7 +165,7 @@ function updateScroll() {
         }, 300);
     }
     
-    // Scroll Reveal
+    // scroll REVEAL
     checkSectionsVisibility();
 }
 
@@ -172,7 +176,7 @@ function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- 3. SCROLL REVEAL ANIMATION (Staggered) ---
+// 3. SCROLL REVEAL ANIMATION (root: null)
 
 const sections = document.querySelectorAll('.section');
 const observerOptions = {
@@ -186,7 +190,7 @@ const observer = new IntersectionObserver((entries, observer) => {
         if (entry.isIntersecting) {
             const section = entry.target;
             
-            // Logic to assign delays based on the new, correct order
+            // LOGIC ASSIGNS DELAY TO THE ( CORRECT ORDER LOGIC )
             let newDelay = 0.0;
             if (section.querySelector('.section-title')) {
                  const titleText = section.querySelector('.section-title').textContent.trim();
@@ -214,7 +218,7 @@ function checkSectionsVisibility() {
     });
 }
 
-// --- 4. GLITCH EFFECT LOGIC ---
+// 4. GLITCH EFFECT LOGIC (goes here)
 
 function applyGlitch(element) {
     if (Math.random() < 0.6) {
@@ -240,7 +244,7 @@ function periodicGlitch() {
     setTimeout(periodicGlitch, nextGlitchTime);
 }
 
-// --- 5. MATRIX PARTICLE GENERATOR ---
+// 5. MATRIX PARTICLE GEN
 
 function generateParticles(count) {
     const viewportWidth = window.innerWidth;
@@ -268,7 +272,7 @@ function generateParticles(count) {
     }
 }
 
-// --- 6. VOLUME CONTROL LOGIC (Instantaneous drag) ---
+// 6. vol control logic (INSTANT DRAG) ---
 
 function updateVolumeBars(volumeFraction) {
     const totalBars = volumeBars.length;
@@ -278,11 +282,11 @@ function updateVolumeBars(volumeFraction) {
         const isActive = index < activeBars;
         bar.classList.toggle('active', isActive);
 
-        // Style the bars dynamically based on active state
+        // STYLED BARS BASED ON ACTIVE STATE
         const baseColor = isActive ? 'var(--color-red)' : 'rgba(255, 255, 255, 0.1)';
         const glow = isActive ? `0 0 5px var(--color-red)` : 'none';
         
-        // Final bar (index 9) gets the bright white effect
+        // FINAL BAR (index 9) bright effects
         if (index === totalBars - 1 && isActive) {
             bar.style.background = 'white';
             bar.style.boxShadow = '0 0 10px white, 0 0 20px rgba(255, 255, 255, 0.5)';
@@ -299,15 +303,15 @@ function handleDrag(event) {
     const clientY = event.touches ? event.touches[0].clientY : event.clientY;
     const rect = volumeControl.getBoundingClientRect();
     
-    // Calculate volumeFraction (0 to 1) based on drag position
+    // volumeFraction VAR (NOTE: 0 to 1) drag position
     let y = clientY - rect.top;
     let volumeFraction = 1 - (y / rect.height); // 1 at top, 0 at bottom
     volumeFraction = Math.max(0, Math.min(1, volumeFraction));
     
-    // Set actual audio volume (relative to maxMusicVolume, 0.65)
+    // SET actual audio volume (relative maxMusicVolume, 0.65)
     bgMusic.volume = volumeFraction * maxMusicVolume; 
     
-    // Update visual bars
+    // UPDATE visual bars
     updateVolumeBars(volumeFraction);
     event.preventDefault(); 
 }
@@ -330,24 +334,24 @@ volumeControl.addEventListener('touchstart', (e) => startDrag(e), { passive: fal
 document.addEventListener('touchmove', handleDrag, { passive: false });
 document.addEventListener('touchend', stopDrag);
 
-// --- 7. CORE SITE TRANSITION LOGIC ---
+// 7. CORE SITE TRANSITION LOGIC
 
 function tryPlayingAllVideos() {
     const videosToPlay = [];
     
-    // Add Edits Carousel Videos
+    // ADD EDIT LOGS CAROUSEL VID
     visibleEditCards.forEach(card => {
         videosToPlay.push(card.querySelector('video'));
     });
 
-    // Add Inspo Carousel Videos
+    // ADD INSPO CAROUSEL VID
     visibleInspoCards.forEach(card => {
         videosToPlay.push(card.querySelector('video'));
     });
 
     videosToPlay.forEach(video => {
         if(video) { 
-            // Attempt to play only if the site is already active (to avoid double play attempts on load)
+            // ATTEMPT TO PLAY, if site already active (AVOID double play attempts on LOAD)
             if (mainContent.classList.contains('fade-in-content')) {
                 video.play().catch(e => {
                     if (e.name !== 'NotAllowedError') {
@@ -360,13 +364,13 @@ function tryPlayingAllVideos() {
 }
 
 
-function enterSite() {
-    // 1. Audio setup: Start at 60% of the volume range
+function enterSite() { 
+    // 60% of the VOL range
     bgMusic.volume = defaultVolumeFraction * maxMusicVolume; // Set initial volume (0.6 * 0.65)
-    bgMusic.currentTime = 70; 
+    bgMusic.currentTime = 58; // bg music start time here
     bgMusic.play().catch(e => console.error("Audio play failed on site entry click:", e));
 
-    // 2. Visual Transitions
+    // VISUAL TRANSITIONS SECTION
     landingScreen.classList.add('fade-out-landing');
     particlesContainer.classList.add('active'); 
 
@@ -386,15 +390,15 @@ function enterSite() {
 window.onload = () => {
      generateParticles(100); 
      updateScroll(); 
-     // Set the initial 60% volume state on load for the visual bars
+     // INITIAL 60% volume state on load visual bars
      updateVolumeBars(defaultVolumeFraction);
      
-     // Initial setup for carousels
+     // SETUP CAROUSEL
      updateCarousel(editsCarouselWrapper, visibleEditCards, editsData, currentEditIndex); 
      updateCarousel(inspoCarouselWrapper, visibleInspoCards, inspoData, currentInspoIndex); 
 }
 
-// --- 8. MODAL FUNCTIONS ---
+// MODAL FUNCTIONS
 
 function openModal(videoElement) {
     videoElement.pause();
@@ -405,7 +409,7 @@ function openModal(videoElement) {
         }
     });
     
-    // Stop background music temporarily
+    // STOP BG background temporarily func
     bgMusic.pause();
     
     currentPlayingVideo = videoElement; 
@@ -432,7 +436,7 @@ function closeModal() {
     modalVideo.querySelector('source').src = "";
     modalVideo.load();
 
-    // Resume background music at its current volume setting
+    // resumes background music at its current setting [logic (play[samevol] -> enter video [bg stops] ->exit-> (samevol)still)
     bgMusic.play().catch(e => console.error("Audio play failed on modal close:", e));
 }
 

@@ -26,9 +26,7 @@ body {
     cursor: auto; 
 }
 
-/* ------------------------------------------------------------------- */
-/* --- ESSENTIAL VISUAL EFFECTS & OVERLAYS --- */
-/* ------------------------------------------------------------------- */
+/* --- ESSENTIAL VISUAL EFFECTS & OVERLAYS  */
 
 /* Scroll Progress Bar */
 #progressBar {
@@ -78,7 +76,7 @@ body {
     100% { transform: translate(var(--x2), var(--y2)) scale(0.5); opacity: 0; }
 }
 
-/* Dynamic Glitch Animation Classes (Applied by JS) */
+/* GLITCH ANIM classes (connected TO JS) */
 .glitch-text {
     position: relative;
     display: inline-block;
