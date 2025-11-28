@@ -172,13 +172,14 @@ const observer = new IntersectionObserver((entries, observer) => {
             let newDelay = 0.0;
             if (section.querySelector('.section-title')) {
                  const titleText = section.querySelector('.section-title').textContent.trim();
-                 // The titles are hardcoded in this logic for staggered animation
+                 // Updated delay map to include Skills & Stack
                  const delayMap = {
                     'About Me': 0.0,
-                    'Coding Projects': 0.1,
-                    'Inspo': 0.2,
-                    'Edits Log': 0.3,
-                    'Socials': 0.4
+                    'Skills & Stack': 0.1,
+                    'Coding Projects': 0.2,
+                    'Inspo': 0.3,
+                    'Edits Log': 0.4,
+                    'Socials': 0.5
                 };
                  newDelay = delayMap[titleText] !== undefined ? delayMap[titleText] : 0.0;
             } 

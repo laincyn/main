@@ -316,6 +316,87 @@ h1 {
 }
 
 /* ------------------------------------------------------------------- */
+/* --- SKILLS & STACK SECTION --- */
+/* ------------------------------------------------------------------- */
+
+.skill-category-title {
+    font-family: 'Space Mono', monospace;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 30px 0 20px 0;
+    letter-spacing: 2px;
+    font-size: 0.9rem;
+    position: relative;
+    display: block;
+}
+
+.skills-grid {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.skill-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 110px; 
+    transition: transform 0.3s ease;
+}
+
+.skill-icon-box {
+    width: 70px;
+    height: 70px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid var(--color-dark-red);
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.2);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.skill-icon-box img {
+    width: 70%;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+}
+
+.skill-name {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.55rem;
+    color: #ffffff;
+    text-align: center;
+    line-height: 1.4;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+/* Hover Effects for Skills */
+.skill-item:hover {
+    transform: translateY(-5px);
+}
+
+.skill-item:hover .skill-icon-box {
+    border-color: var(--color-red);
+    box-shadow: 0 0 20px var(--color-red), inset 0 0 10px rgba(255, 107, 107, 0.2);
+    background: rgba(255, 107, 107, 0.05);
+}
+
+.skill-item:hover .skill-name {
+    opacity: 1;
+    color: var(--color-red);
+    text-shadow: 0 0 5px var(--color-red);
+}
+
+/* ------------------------------------------------------------------- */
 /* --- VIDEOS & PROJECTS --- */
 /* ------------------------------------------------------------------- */
 .video-grid {
@@ -871,6 +952,24 @@ footer {
     }
     #editsCarouselWrapper .video-card:last-child[data-position="side"] {
          transform: scale(0.7) translateX(15%); 
+    }
+    
+    /* Skills Mobile Adjustments */
+    .skills-grid {
+        gap: 15px;
+    }
+    
+    .skill-item {
+        width: 90px;
+    }
+    
+    .skill-icon-box {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .skill-name {
+        font-size: 0.45rem;
     }
 
 }
