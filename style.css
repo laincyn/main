@@ -485,7 +485,7 @@ h1 {
 .project-grid {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 120px;
     flex-wrap: wrap; 
 }
 
