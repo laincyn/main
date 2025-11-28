@@ -4,322 +4,172 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CYN // SYSTEM ONLINE</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
     <div id="progressBar"></div>
-
     <div id="landingScreen">
-        <button id="enterButton" onclick="enterSite()">
-            <span class="enter-text"> >ENTER SITE< </span>
-        </button>
+        <button id="enterButton" onclick="enterSite()"><span class="enter-text"> >ENTER SITE< </span></button>
     </div>
-
     <audio id="backgroundMusic" loop preload="auto" volume="0">
         <source src="backgroundmp3/happiness.mp3" type="audio/mp3">
         Your browser does not support the audio element.
     </audio>
-
-    <div class="particles-container" id="matrixParticles">
-    </div>
-    
+    <div class="particles-container" id="matrixParticles"></div>
     <div class="background" id="mainBackground"></div>
-    
-    <div id="volumeControl">
-        <div class="volume-bar" data-index="0"></div>
-        <div class="volume-bar" data-index="1"></div>
-        <div class="volume-bar" data-index="2"></div>
-        <div class="volume-bar" data-index="3"></div>
-        <div class="volume-bar" data-index="4"></div>
-        <div class="volume-bar" data-index="5"></div>
-        <div class="volume-bar" data-index="6"></div>
-        <div class="volume-bar" data-index="7"></div>
-        <div class="volume-bar" data-index="8"></div>
-        <div class="volume-bar" data-index="9"></div>
-    </div>
+    <div id="volumeControl"></div>
 
     <div class="container" id="mainContent">
         <header>
-            <div id="dateTime"></div> 
-            
+            <div id="dateTime"></div>
             <h1 class="glitch-text" data-text="cyn" id="mainTitle">cyn</h1>
-            
             <div class="profile-pic-container">
                 <img src="png/joker.jpg" alt="Profile Picture of The Joker" class="profile-pic">
             </div>
-            
             <p class="subtitle">>>> System Online. Welcome, User.</p>
         </header>
 
         <section class="section animated-section" data-animation-delay="0.0">
             <h2 class="section-title">About Me</h2>
             <p class="about-info">
-                INTP | aspiring premiere pro & ae editor
-                <br>
-                i edit and code for fun 
-                <br>
-                currently focused on python, c++, html, css, and javascript
-                <br>
-                <br>
+                INTP | aspiring premiere pro & ae editor<br>
+                i edit and code for fun<br>
+                currently focused on python, c++, html, css, and javascript<br><br>
                 special thanks to inspos, @zeropointer & @junekept for help !!
             </p>
         </section>
 
         <section class="section animated-section" id="skillsSection" data-animation-delay="0.1">
             <h2 class="section-title">Skills & Stack</h2>
-            
             <h3 class="skill-category-title">// LANGUAGES</h3>
             <div class="skills-grid">
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_lang/python.png" alt="Python">
-                    </div>
-                    <span class="skill-name">PYTHON</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_lang/c++.png" alt="C++">
-                    </div>
-                    <span class="skill-name">C++</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_lang/html.png" alt="HTML5">
-                    </div>
-                    <span class="skill-name">HTML5</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_lang/css.png" alt="CSS3">
-                    </div>
-                    <span class="skill-name">CSS3</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_lang/js.png" alt="JavaScript">
-                    </div>
-                    <span class="skill-name">JAVASCRIPT</span>
-                </div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_lang/python.png" alt="Python"></div><span class="skill-name">PYTHON</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_lang/c++.png" alt="C++"></div><span class="skill-name">C++</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_lang/html.png" alt="HTML5"></div><span class="skill-name">HTML5</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_lang/css.png" alt="CSS3"></div><span class="skill-name">CSS3</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_lang/js.png" alt="JavaScript"></div><span class="skill-name">JAVASCRIPT</span></div>
             </div>
-
             <h3 class="skill-category-title">// TOOLS & SOFTWARE</h3>
             <div class="skills-grid">
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_apps/pr.png" alt="Premiere Pro">
-                    </div>
-                    <span class="skill-name">PREMIERE PRO</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_apps/ae.png" alt="After Effects">
-                    </div>
-                    <span class="skill-name">AFTER EFFECTS</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_apps/blender.png" alt="Blender">
-                    </div>
-                    <span class="skill-name">BLENDER</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_apps/vscode.png" alt="VS Code">
-                    </div>
-                    <span class="skill-name">VS CODE</span>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-icon-box">
-                        <img src="logos_apps/clion.png" alt="CLion">
-                    </div>
-                    <span class="skill-name">CLION</span>
-                </div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_apps/pr.png" alt="Premiere Pro"></div><span class="skill-name">PREMIERE PRO</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_apps/ae.png" alt="After Effects"></div><span class="skill-name">AFTER EFFECTS</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_apps/blender.png" alt="Blender"></div><span class="skill-name">BLENDER</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_apps/vscode.png" alt="VS Code"></div><span class="skill-name">VS CODE</span></div>
+                <div class="skill-item"><div class="skill-icon-box"><img src="logos_apps/clion.png" alt="CLion"></div><span class="skill-name">CLION</span></div>
             </div>
         </section>
         
         <section class="section animated-section" id="codingProjectsSection" data-animation-delay="0.2">
             <h2 class="section-title">Coding Projects</h2>
             <div class="project-grid">
-                <a href="https://qr-web-9i4q.onrender.com/" target="_blank" class="project-card">
+                <a href="https://qr-web-9i4q.onrender.com/" target="_blank" class="project-card" data-preview="screenshots_projects/qrcode.png">
                     <p class="project-title">QR Code Generator</p>
+                    <p class="project-description">made with python, html</p>
                     <div class="project-cube">QR</div>
                 </a>
-                
-                <a href="https://laincyn.github.io/the_marias/" target="_blank" class="project-card">
+                <a href="https://laincyn.github.io/the_marias/" target="_blank" class="project-card" data-preview="screenshots_projects/musicplayer.png">
                     <p class="project-title">ALBUM Player</p>
+                    <p class="project-description">made with html, css, and js</p>
                     <div class="project-cube play-button"></div>
                 </a>
-                
-                <a href="https://laincyn.github.io/to-do-list/" target="_blank" class="project-card todo-project">
+                <a href="https://laincyn.github.io/to-do-list/" target="_blank" class="project-card todo-project" data-preview="screenshots_projects/todolist.png">
                     <p class="project-title">To-Do List</p>
+                    <p class="project-description">made with html, css, and js</p>
                     <div class="project-cube todo-cube">&#10003;</div>
                 </a>
-                </div>
+            </div>
+            <div class="project-preview" id="projectPreview" aria-hidden="true"><img src="" alt="Project preview"></div>
         </section>
         
         <section class="section animated-section" id="inspoSection" data-animation-delay="0.3">
             <h2 class="section-title">Inspo</h2>
-            
             <div class="edits-carousel-container">
                 <div class="edits-carousel-wrapper" id="inspoCarouselWrapper">
-                    
                     <div class="video-card" id="inspoCard1" data-position="side">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <video autoplay muted loop playsinline onclick="openModal(this)"><source src="" type="video/mp4">Your browser does not support the video tag.</video>
                             </div>
-                            <a href="#" target="_blank" class="video-tiktok-bottom">
-                                <span></span>
-                            </a>
+                            <a href="#" target="_blank" class="video-tiktok-bottom"><span></span></a>
                         </div>
                     </div>
-                    
                     <div class="video-card" id="inspoCard2" data-position="center">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <video autoplay muted loop playsinline onclick="openModal(this)"><source src="" type="video/mp4">Your browser does not support the video tag.</video>
                             </div>
-                            <a href="#" target="_blank" class="video-tiktok-bottom">
-                                <span></span>
-                            </a>
+                            <a href="#" target="_blank" class="video-tiktok-bottom"><span></span></a>
                         </div>
                     </div>
-
                     <div class="video-card" id="inspoCard3" data-position="side">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <video autoplay muted loop playsinline onclick="openModal(this)"><source src="" type="video/mp4">Your browser does not support the video tag.</video>
                             </div>
-                            <a href="#" target="_blank" class="video-tiktok-bottom">
-                                <span></span>
-                            </a>
+                            <a href="#" target="_blank" class="video-tiktok-bottom"><span></span></a>
                         </div>
                     </div>
-                    
                 </div>
-                
-                <button class="carousel-nav" id="prevInspo" onclick="rotateInspoCarousel(-1)" aria-label="Previous Inspo">
-                    <span style="font-size: 1.5rem; transform: translateX(-2px);">&lt;</span>
-                </button>
-                <button class="carousel-nav" id="nextInspo" onclick="rotateInspoCarousel(1)" aria-label="Next Inspo">
-                    <span style="font-size: 1.5rem; transform: translateX(2px);">&gt;</span>
-                </button>
+                <button class="carousel-nav" id="prevInspo" onclick="rotateInspoCarousel(-1)" aria-label="Previous Inspo"><span style="font-size: 1.5rem; transform: translateX(-2px);">&lt;</span></button>
+                <button class="carousel-nav" id="nextInspo" onclick="rotateInspoCarousel(1)" aria-label="Next Inspo"><span style="font-size: 1.5rem; transform: translateX(2px);">&gt;</span></button>
             </div>
         </section>
         
         <section class="section animated-section" id="recentWorksSection" data-animation-delay="0.4">
             <h2 class="section-title">Edits Log</h2>
-            
             <div class="edits-carousel-container">
                 <div class="edits-carousel-wrapper" id="editsCarouselWrapper">
-                    
                     <div class="video-card" id="editCard1" data-position="side">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <video autoplay muted loop playsinline onclick="openModal(this)"><source src="" type="video/mp4">Your browser does not support the video tag.</video>
                             </div>
-                            <a href="#" target="_blank" class="video-tiktok-bottom">
-                                <span></span>
-                            </a>
+                            <a href="#" target="_blank" class="video-tiktok-bottom"><span></span></a>
                         </div>
                     </div>
-                    
                     <div class="video-card" id="editCard2" data-position="center">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <video autoplay muted loop playsinline onclick="openModal(this)"><source src="" type="video/mp4">Your browser does not support the video tag.</video>
                             </div>
-                            <a href="#" target="_blank" class="video-tiktok-bottom">
-                                <span></span>
-                            </a>
+                            <a href="#" target="_blank" class="video-tiktok-bottom"><span></span></a>
                         </div>
                     </div>
-
                     <div class="video-card" id="editCard3" data-position="side">
                         <div class="video-container">
                             <div class="video-horizontal">
-                                <video autoplay muted loop playsinline onclick="openModal(this)">
-                                    <source src="" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
+                                <video autoplay muted loop playsinline onclick="openModal(this)"><source src="" type="video/mp4">Your browser does not support the video tag.</video>
                             </div>
-                            <a href="#" target="_blank" class="video-tiktok-bottom">
-                                <span></span>
-                            </a>
+                            <a href="#" target="_blank" class="video-tiktok-bottom"><span></span></a>
                         </div>
                     </div>
-                    
                 </div>
-                
-                <button class="carousel-nav" id="prevEdit" onclick="rotateCarousel(-1)" aria-label="Previous Edit">
-                    <span style="font-size: 1.5rem; transform: translateX(-2px);">&lt;</span>
-                </button>
-                <button class="carousel-nav" id="nextEdit" onclick="rotateCarousel(1)" aria-label="Next Edit">
-                    <span style="font-size: 1.5rem; transform: translateX(2px);">&gt;</span>
-                </button>
+                <button class="carousel-nav" id="prevEdit" onclick="rotateCarousel(-1)" aria-label="Previous Edit"><span style="font-size: 1.5rem; transform: translateX(-2px);">&lt;</span></button>
+                <button class="carousel-nav" id="nextEdit" onclick="rotateCarousel(1)" aria-label="Next Edit"><span style="font-size: 1.5rem; transform: translateX(2px);">&gt;</span></button>
             </div>
-            
         </section>
         
         <section class="section animated-section" data-animation-delay="0.5">
             <h2 class="section-title">Socials</h2>
             <div class="links-grid">
-                <a href="https://www.tiktok.com/@cynhyo" target="_blank" class="link-card tiktok">
-                    <h3>TikTok</h3>
-                    <p>@cynhyo // Target: Edits</p>
-                </a>
-                <a href="https://discord.gg/ERmducCwvK" target="_blank" class="link-card discord">
-                    <h3>Discord</h3>
-                    <p>Join Server // Target: Community_Hub</p>
-                </a>
-                <a href="https://x.com/cyntsch" target="_blank" class="link-card twitter">
-                    <h3>Twitter</h3>
-                    <p>@cyntsch // Target: Micro_Blog</p>
-                </a>
-                <a href="https://github.com/laincyn" target="_blank" class="link-card github">
-                    <h3>GitHub</h3>
-                    <p>@laincyn // Target: Source_Code_Repo</p>
-                </a>
+                <a href="https://www.tiktok.com/@cynhyo" target="_blank" class="link-card tiktok"><h3>TikTok</h3><p>@cynhyo // Target: Edits</p></a>
+                <a href="https://discord.gg/ERmducCwvK" target="_blank" class="link-card discord"><h3>Discord</h3><p>Join Server // Target: Community_Hub</p></a>
+                <a href="https://x.com/cyntsch" target="_blank" class="link-card twitter"><h3>Twitter</h3><p>@cyntsch // Target: Micro_Blog</p></a>
+                <a href="https://github.com/laincyn" target="_blank" class="link-card github"><h3>GitHub</h3><p>@laincyn // Target: Source_Code_Repo</p></a>
             </div>
         </section>
-        
-        </div>
+    </div>
 
     <div id="videoModal">
         <span class="close" onclick="closeModal()" role="button" aria-label="Close video modal">[X]</span>
-        <div class="modal-content">
-            <video id="modalVideo" controls loop preload="auto">
-                <source src="" type="video/mp4"> 
-                Your browser does not support the video tag.
-            </video>
-        </div>
+        <div class="modal-content"><video id="modalVideo" controls loop preload="auto"><source src="" type="video/mp4">Your browser does not support the video tag.</video></div>
     </div>
     
     <button id="backToTop" onclick="scrollToTop()" aria-label="Back to top">^</button>
     
     <footer>
-        <div class="footer-log">
-            <p>// LOG: Connection status: Encrypted and Stable. Protocol: HTTP/2.0.</p>
-        </div>
+        <div class="footer-log"><p>// LOG: Connection status: Encrypted and Stable. Protocol: HTTP/2.0.</p></div>
     </footer>
 
     <script src="script.js"></script>
