@@ -25,7 +25,7 @@ let activeProjectCard = null;
 
 // Carousel Data
 const editsData = [
-    { id: 'tadhana', src: 'recent_works/tadhana.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7578281400990715144', title: 'tadhana.mp4 // TikTok' },
+    { id: 'tadhana', src: 'recent_works/tadhana.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7578292946370432263?lang=en', title: 'tadhana.mp4 // TikTok' },
     { id: 'confession', src: 'recent_works/confession.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7577174486793866503', title: 'confession.mp4 // TikTok' },
     { id: 'rezedenji', src: 'recent_works/rezedenji.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7568189301809401106', title: 'rezedenji.mp4 // TikTok' },
     { id: 'waguri', src: 'recent_works/waguri.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7564582679925083410', title: 'waguri.mp4 // TikTok' },
