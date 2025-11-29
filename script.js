@@ -25,11 +25,12 @@ let activeProjectCard = null;
 
 // Carousel Data
 const editsData = [
+    { id: 'tadhana', src: 'recent_works/tadhana.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7578281400990715144', title: 'tadhana.mp4 // TikTok' },
     { id: 'confession', src: 'recent_works/confession.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7577174486793866503', title: 'confession.mp4 // TikTok' },
-    { id: 'cyrene', src: 'recent_works/cyrene.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7571472539432586503', title: 'cyrene.mp4 // TikTok' },
-    { id: 'dispatch', src: 'recent_works/dispatch.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7575974752636947720', title: 'dispatch.mp4 // TikTok' },
     { id: 'rezedenji', src: 'recent_works/rezedenji.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7568189301809401106', title: 'rezedenji.mp4 // TikTok' },
     { id: 'waguri', src: 'recent_works/waguri.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7564582679925083410', title: 'waguri.mp4 // TikTok' },
+    { id: 'dispatch', src: 'recent_works/dispatch.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7575974752636947720', title: 'dispatch.mp4 // TikTok' },
+    { id: 'cyrene', src: 'recent_works/cyrene.mp4', link: 'https://www.tiktok.com/@cynhyo/video/7571472539432586503', title: 'cyrene.mp4 // TikTok' },
 ];
 const inspoData = [
     { id: 'nisekoi', src: 'inspo/nisekoi.mp4', link: 'https://www.tiktok.com/@artori.a/video/7571383570418257183', title: 'nisekoi.mp4 // TikTok' },
